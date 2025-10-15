@@ -29,11 +29,11 @@ const AdminDashboard: React.FC = () => {
   ];
 
   const quickActions = [
-    { icon: Image, label: 'Upload Gallery/Images', path: '/admin/gallery' },
+    { icon: Image, label: 'Upload Images', path: '/admin/gallery' },
     { icon: Edit3, label: 'Blogs Entry', path: '/admin/blogs' },
-    { icon: Info, label: 'About Us Page Custom', path: '/admin/about' },
-    { icon: FolderOpen, label: 'Collection Page Custom', path: '/admin/collection' },
-    { icon: ScrollText, label: 'Manuscript Page Custom', path: '/admin/manuscript' },
+    { icon: Info, label: 'About Us Page ', path: '/admin/about' },
+    { icon: FolderOpen, label: 'Collection Page ', path: '/admin/collection' },
+    { icon: ScrollText, label: 'Manuscript Page ', path: '/admin/manuscript' },
     { icon: History, label: 'Edit History', path: '/admin/history' },
   ];
 
