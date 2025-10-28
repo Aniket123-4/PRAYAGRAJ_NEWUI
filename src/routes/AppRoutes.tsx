@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ScrollToTop from "../components/ScrollToTop";
+import ProtectedRoute from "./ProtectedRoute"; // Import the ProtectedRoute
 
 // Pages
 import Home from "../pages/Home";
@@ -32,7 +33,6 @@ import NewspapersAvailability from "../pages/NewspapersAvailability";
 
 const AppRoutes = () => {
   return (
-
     <>
       <ScrollToTop />
       <Routes>
@@ -40,8 +40,8 @@ const AppRoutes = () => {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="login" element={<LoginPage />} />
-          <Route path="admin" element={<AdminDashboard />} />
-
+          
+          {/* Public Routes */}
           <Route path="services/services" element={<Services />} />
           <Route path="services/e-services" element={<EServices />} />
           <Route path="membership" element={<Membership />} />
@@ -52,21 +52,71 @@ const AppRoutes = () => {
           <Route path="contact" element={<Contact />} />
           <Route path="tender" element={<Tender />} />
 
-          {/* Admin Pages */}
-          <Route path="admin/about" element={<AboutUsForm />} />
-          <Route path="admin/collection" element={<CollectionForm />} />
-          <Route path="admin/blogs" element={<BlogForm />} />
-          <Route path="admin/gallery" element={<GalleryUpload />} />
-          <Route path="admin/manuscript" element={<ManuscriptForm />} />
-          <Route path="admin/history" element={<EditHistory />} />
-
-          {/* Other Pages */}
+          {/* Other Public Pages */}
           <Route path="important-links" element={<ImportantLinks />} />
           <Route path="gazette" element={<Gazette />} />
           <Route path="magazine" element={<Magazine />} />
           <Route path="pandulipi-sanskriti" element={<PandulipiSanskriti />} />
           <Route path="old-bound-newspapers" element={<OldBoundNewspapers />} />
           <Route path="newspapers-availability" element={<NewspapersAvailability />} />
+
+          {/* 🔐 PROTECTED ADMIN ROUTES */}
+          <Route 
+            path="admin" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/about" 
+            element={
+              <ProtectedRoute>
+                <AboutUsForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/collection" 
+            element={
+              <ProtectedRoute>
+                <CollectionForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/blogs" 
+            element={
+              <ProtectedRoute>
+                <BlogForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/gallery" 
+            element={
+              <ProtectedRoute>
+                <GalleryUpload />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/manuscript" 
+            element={
+              <ProtectedRoute>
+                <ManuscriptForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/history" 
+            element={
+              <ProtectedRoute>
+                <EditHistory />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* 404 Page */}
           <Route path="*" element={<NotFound />} />

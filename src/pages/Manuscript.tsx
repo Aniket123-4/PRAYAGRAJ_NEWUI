@@ -1,28 +1,32 @@
-import React from "react";
+// src/pages/Manuscript.tsx
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent } from "@/components/ui/card";
+import { RootState } from '../redux/store';
+import { fetchManuscripts } from '../redux/slices/manuscriptSlice';
 
 const Manuscript = () => {
-  const manuscripts = [
-    { sr: 1, title: "Rasail Ibn ul Amid", author: "ibn-ul-Amid", year: "", call: "31/23" },
-    { sr: 2, title: "Tarikh Qazai", author: "", year: "", call: "22/19" },
-    { sr: 3, title: "Qalaid-ul-Jamal Halat Qutul Arab", author: "", year: "ba-ile 978 Hijri", call: "22/44" },
-    { sr: 4, title: "Ar Risalatul Musammat", author: "Al Qutrub un Nahvi", year: "", call: "25/6" },
-    { sr: 5, title: "Khazanat-ul-Khayal", author: "Mohd. Momin", year: "16th Century", call: "31/21" },
-    { sr: 6, title: "Wafiyatul Ayan", author: "Ahmad Shamsuddin", year: "1194", call: "19/14" },
-    { sr: 7, title: "Asmaur-Rijalus-Sahihen", author: "Abul Fazal Mohd Bin Tahir", year: "978 Hijri", call: "4/3" },
-    { sr: 8, title: "Mujame Zahbi", author: "Zahbi", year: "", call: "4/28" },
-    { sr: 9, title: "Tarikh Taimuri", author: "", year: "1232", call: "22/17" },
-    { sr: 10, title: "Anwar-ur-Rabi", author: "", year: "", call: "" },
-    { sr: 11, title: "Sarah Lugat ki Kitab", author: "Jamalul Qarshi", year: "1025 Hijri", call: "25/17" },
-    { sr: 12, title: "Jawahir-ul-Maziyah", author: "Sheikh Mohi Uddin", year: "", call: "4/12" },
-    { sr: 13, title: "Isabah Fi Tameez Sahabah", author: "Hajar Asqalani", year: "", call: "4/4" },
-    { sr: 14, title: "Al Alam be Alamil Masjidul Haram", author: "Qutubuddin Qadri", year: "", call: "22/6" },
-    { sr: 15, title: "Tarikh Ibne Qutaiba", author: "Ibne Qutaiba", year: "", call: "22/11" },
-    { sr: 16, title: "Ahwal Imam Ham wa Aulad-e-Rasool", author: "Sheikh Noor Uddin", year: "972 Hijri", call: "19/26" },
-    { sr: 17, title: "Majma-ul-Bahrain", author: "", year: "1102 Hijri", call: "4/27" },
-    { sr: 18, title: "Jugrafiyatul Arz", author: "", year: "1021", call: "22/26" },
-    { sr: 19, title: "Nihatah", author: "", year: "1208", call: "4/8" },
-  ];
+  const dispatch = useDispatch();
+  const { data: manuscripts, loading } = useSelector((state: RootState) => state.manuscript);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+
+  useEffect(() => {
+    dispatch(fetchManuscripts() as any);
+  }, [dispatch]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(manuscripts.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const currentManuscripts = manuscripts.slice(startIndex, startIndex + rowsPerPage);
+
+  if (loading && manuscripts.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background py-12 px-6 md:px-16">
@@ -52,20 +56,53 @@ const Manuscript = () => {
                 </tr>
               </thead>
               <tbody className="text-foreground">
-                {manuscripts.map((item) => (
-                  <tr
-                    key={item.sr}
-                    className="border-b border-border hover:bg-background-secondary transition"
-                  >
-                    <td className="px-4 py-3">{item.sr}</td>
-                    <td className="px-4 py-3 font-medium text-foreground">{item.title}</td>
-                    <td className="px-4 py-3">{item.author || "-"}</td>
-                    <td className="px-4 py-3">{item.year || "-"}</td>
-                    <td className="px-4 py-3">{item.call || "-"}</td>
+                {currentManuscripts.length > 0 ? (
+                  currentManuscripts.map((item) => (
+                    <tr
+                      key={item._id}
+                      className="border-b border-border hover:bg-background-secondary transition"
+                    >
+                      <td className="px-4 py-3">{item.srNo}</td>
+                      <td className="px-4 py-3 font-medium text-foreground">{item.title}</td>
+                      <td className="px-4 py-3">{item.author || "-"}</td>
+                      <td className="px-4 py-3">{item.year || "-"}</td>
+                      <td className="px-4 py-3">{item.callNo}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                      No manuscripts available.
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
+
+            {/* Pagination for public view */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center mt-6 space-x-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background-secondary"
+                >
+                  Previous
+                </button>
+                
+                <span className="px-3 py-1 text-sm text-foreground">
+                  Page {currentPage} of {totalPages}
+                </span>
+                
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background-secondary"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

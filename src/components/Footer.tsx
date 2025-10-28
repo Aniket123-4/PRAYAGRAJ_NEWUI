@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
   const importantLinks = [
     { 
       label: 'Pay Your Fees', 
-      href: '/e-services', 
+      href: '/services/e-services', 
       icon: CreditCard 
     },
     { 
@@ -82,10 +82,10 @@ const Footer: React.FC = () => {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
+    { icon: Facebook, href: 'https://www.facebook.com/agplib?ref=embed_page', label: 'Facebook' },
+    { icon: Twitter, href: 'https://x.com/theupindex/status/1665654584021270528', label: 'Twitter' },
+    { icon: Instagram, href: 'https://www.instagram.com/explore/locations/517040095388845/allahabad-government-public-library/?hl=en', label: 'Instagram' },
+    { icon: Youtube, href: 'https://www.youtube.com/watch?v=eZEr4Oryxos', label: 'YouTube' },
   ];
 
   return (
@@ -260,7 +260,7 @@ const Footer: React.FC = () => {
               </div>
 
               <div className="text-center">
-                <h5 className="font-medium mb-3 text-gray-700 dark:text-gray-300">Reach Us At:</h5>
+            
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
@@ -308,7 +308,7 @@ const Footer: React.FC = () => {
             {/* Copyright */}
             <div className="text-right">
               <div className="text-sm text-muted-foreground">
-                <div>© 2024 Government Public Library Prayagraj.</div>
+                <div>© 2025 Government Public Library Prayagraj.</div>
                 <div>All rights reserved.</div>
               </div>
             </div>
