@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import library1 from '../assets/library-1.jpg';
-import library2 from '../assets/library-2.jpg';
-import library3 from '../assets/library-3.jpg';
-import library4 from '../assets/library-4.jpg';
-import library5 from '../assets/library-5.jpg';
-import library6 from '../assets/library-6.jpg';
+import library1 from '../assets/library-31.jpg';
+import library2 from '../assets/library-42.jpg';
+import library3 from '../assets/reading-hall.jpg';
+import library4 from '../assets/ddddd.jpeg';
+import library5 from '../assets/library-45.jpg';
+import library6 from '../assets/entrance-facade.jpg';
 
 const libraryImages = [
   { src: library1, alt: 'Modern Library Interior' },

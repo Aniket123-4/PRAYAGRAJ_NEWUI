@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  BookOpen, 
-  Users, 
-  Archive, 
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  BookOpen,
+  Users,
+  Archive,
   Clock,
   ArrowRight,
   Calendar,
+
   Bell,
   Search,
   Download,
@@ -35,17 +36,19 @@ import {
   FileText
 } from 'lucide-react';
 import ThreeHero from '../components/ThreeHero';
-import MovingLibraryImages from '../components/MovingLibraryImages';
+import DynamicHomeSlider from '../components/DynamicHomeSlider';
+import DynamicCarousel from '../components/DynamicCarousel';
+// import DynamicHomeSlider from '../components/DynamicHomeSlider';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from '../utils/translations';
 import gmsImage from '../assets/gms.webp';
-import entranceFacade from '../assets/entrance-facade.jpg';
-import readingHall from '../assets/bookshelf-interior.jpg';
-import rareBooks from '../assets/rare-books.jpg';
-import digitalSection from '../assets/digital-section.jpg';
-import gardenView from '../assets/IMG-20250925-WA0040.jpg';
+// import entranceFacade from '../assets/entrance-facade.jpg';
+// import readingHall from '../assets/bookshelf-interior.jpg';
+// import rareBooks from '../assets/rare-books.jpg';
+// import digitalSection from '../assets/digital-section.jpg';
+// import gardenView from '../assets/IMG-20250925-WA0040.jpg';
 import p1 from '../ExternalLogoImages/p1.webp';
 import p2 from '../ExternalLogoImages/p2.webp';
 import p3 from '../ExternalLogoImages/p3.webp';
@@ -63,7 +66,7 @@ const Home: React.FC = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
-
+  const navigate = useNavigate();
   // Theme-based classes using CSS variables
   const getThemeClasses = () => {
     return {
@@ -72,21 +75,21 @@ const Home: React.FC = () => {
       heroBackground: 'bg-gradient-hero',
       sectionBackground: 'bg-background-secondary',
       cardBackground: 'bg-card',
-      
+
       // Text colors
       textPrimary: 'text-foreground',
       textSecondary: 'text-muted-foreground',
       textAccent: 'text-primary',
-      
+
       // Border colors
       borderPrimary: 'border-primary',
       borderAccent: 'border-border-orange',
       borderDefault: 'border-border',
-      
+
       // Button colors
       buttonPrimary: 'bg-primary hover:bg-primary-dark text-primary-foreground',
       buttonSecondary: 'border-border text-foreground hover:bg-accent',
-      
+
       // Special colors
       importantBackground: 'bg-destructive/10',
       importantBorder: 'border-destructive',
@@ -101,14 +104,14 @@ const Home: React.FC = () => {
 
   const GMSImage: React.FC = () => {
     return (
-      <motion.div 
+      <motion.div
         className="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-2xl"
         whileHover={{ scale: 1.05, rotate: 2 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <img 
-          src={gmsImage} 
-          alt="Dr. Gopal M Shukla - Librarian" 
+        <img
+          src={gmsImage}
+          alt="Dr. Gopal M Shukla - Librarian"
           className="w-full h-full object-cover"
         />
       </motion.div>
@@ -116,51 +119,51 @@ const Home: React.FC = () => {
   };
 
   // Library building images for carousel
-  const libraryImages = [
-    {
-      src: entranceFacade,
-      alt: 'Library Entrance Facade',
-      title: 'Grand Entrance Facade',
-      description: 'The magnificent Gothic/Scottish architecture of Prayagraj Public Library'
-    },
-    {
-      src: readingHall,
-      alt: 'Main Reading Hall',
-      title: 'Spacious Reading Hall',
-      description: 'Peaceful environment for focused study and research'
-    },
-    {
-      src: rareBooks,
-      alt: 'Rare Books Section',
-      title: 'Rare Manuscripts Collection',
-      description: 'Preserving ancient knowledge for future generations'
-    },
-    {
-      src: digitalSection,
-      alt: 'Digital Library Section',
-      title: 'Modern Digital Infrastructure',
-      description: 'Blending traditional knowledge with modern technology'
-    },
-    {
-      src: gardenView,
-      alt: 'Library Garden View',
-      title: 'Serene Campus Environment',
-      description: 'Beautiful surroundings in Chandra Shekhar Azad Park'
-    }
-  ];
+  // const libraryImages = [
+  //   {
+  //     src: entranceFacade,
+  //     alt: 'Library Entrance Facade',
+  //     title: 'Grand Entrance Facade',
+  //     description: 'The magnificent Gothic/Scottish architecture of Prayagraj Public Library'
+  //   },
+  //   {
+  //     src: readingHall,
+  //     alt: 'Main Reading Hall',
+  //     title: 'Spacious Reading Hall',
+  //     description: 'Peaceful environment for focused study and research'
+  //   },
+  //   {
+  //     src: rareBooks,
+  //     alt: 'Rare Books Section',
+  //     title: 'Rare Manuscripts Collection',
+  //     description: 'Preserving ancient knowledge for future generations'
+  //   },
+  //   {
+  //     src: digitalSection,
+  //     alt: 'Digital Library Section',
+  //     title: 'Modern Digital Infrastructure',
+  //     description: 'Blending traditional knowledge with modern technology'
+  //   },
+  //   {
+  //     src: gardenView,
+  //     alt: 'Library Garden View',
+  //     title: 'Serene Campus Environment',
+  //     description: 'Beautiful surroundings in Chandra Shekhar Azad Park'
+  //   }
+  // ];
 
   // Auto-play carousel
-  useEffect(() => {
-    if (!isAutoPlaying) return;
+  // useEffect(() => {
+  //   if (!isAutoPlaying) return;
 
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 4000);
+  //   const interval = setInterval(() => {
+  //     setCurrentImageIndex((prevIndex) =>
+  //       prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
+  //     );
+  //   }, 4000);
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, libraryImages.length]);
+  //   return () => clearInterval(interval);
+  // }, [isAutoPlaying, libraryImages.length]);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -182,17 +185,17 @@ const Home: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  // const nextImage = () => {
+  //   setCurrentImageIndex((prevIndex) =>
+  //     prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
+  //   );
+  // };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === 0 ? libraryImages.length - 1 : prevIndex - 1
-    );
-  };
+  // const prevImage = () => {
+  //   setCurrentImageIndex((prevIndex) =>
+  //     prevIndex === 0 ? libraryImages.length - 1 : prevIndex - 1
+  //   );
+  // };
 
   const goToImage = (index: number) => {
     setCurrentImageIndex(index);
@@ -217,36 +220,36 @@ const Home: React.FC = () => {
       icon: Archive,
       title: t('digitalArchives'),
       description: t('archivesDescription'),
-      href: '/archives',
+      href: '/archives/gallery',
       gradient: 'bg-gradient-secondary'
     },
     {
       icon: Search,
       title: t('researchServices'),
       description: t('researchDescription'),
-      href: '/services',
+      href: '/services/services',
       gradient: 'bg-gradient-accent'
     },
     {
       icon: Download,
       title: t('eResources'),
       description: t('eResourcesDescription'),
-      href: '/e-services',
+      href: '/services/e-services',
       gradient: 'bg-gradient-primary'
     },
   ];
 
   // Add this inside your Home component, after the other constants like stats, services, etc.
-const logoImages = [
-  { src: p1, alt: 'Partner Logo 1' },
-  { src: p2, alt: 'Partner Logo 2' },
-  { src: p3, alt: 'Partner Logo 3' },
-  { src: p4, alt: 'Partner Logo 4' },
-  { src: p5, alt: 'Partner Logo 5' },
-  { src: p6, alt: 'Partner Logo 6' },
-  { src: p7, alt: 'Partner Logo 7' },
-  { src: p8, alt: 'Partner Logo 8' }
-];
+  const logoImages = [
+    { src: p1, alt: 'Partner Logo 1' },
+    { src: p2, alt: 'Partner Logo 2' },
+    { src: p3, alt: 'Partner Logo 3' },
+    { src: p4, alt: 'Partner Logo 4' },
+    { src: p5, alt: 'Partner Logo 5' },
+    { src: p6, alt: 'Partner Logo 6' },
+    { src: p7, alt: 'Partner Logo 7' },
+    { src: p8, alt: 'Partner Logo 8' }
+  ];
 
   const events = [
     {
@@ -351,8 +354,8 @@ const logoImages = [
 
   const hoverCardVariants = {
     initial: { scale: 1, y: 0 },
-    hover: { 
-      scale: 1.02, 
+    hover: {
+      scale: 1.02,
       y: -8,
       transition: {
         type: "spring",
@@ -389,20 +392,23 @@ const logoImages = [
       {/* Hero Section */}
       <section className={`relative h-screen flex items-center justify-center overflow-hidden ${themeClasses.heroBackground}`}>
         {/* Animated Background Elements */}
-        <motion.div 
+        <motion.div
           className="absolute top-20 left-10 text-primary-foreground/20"
+          //@ts-ignore
           animate={floatingAnimation}
         >
           <BookOpen size={40} />
         </motion.div>
-        <motion.div 
+        <motion.div
           className="absolute bottom-32 right-16 text-primary-foreground/20"
+          //@ts-ignore
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 1 } }}
         >
           <Users size={50} />
         </motion.div>
-        <motion.div 
+        <motion.div
           className="absolute top-1/3 right-20 text-primary-foreground/20"
+          //@ts-ignore
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 2 } }}
         >
           <Archive size={35} />
@@ -412,10 +418,10 @@ const logoImages = [
         <div className="absolute inset-0 z-0">
           <ThreeHero />
         </div>
-        
+
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/30 z-1"></div>
-        
+
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-4 text-center">
           <motion.div
@@ -432,8 +438,8 @@ const logoImages = [
             >
               <Sparkles className="h-12 w-12 text-primary-foreground/80 mx-auto mb-4" />
             </motion.div>
-            
-            <motion.h1 
+
+            <motion.h1
               className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-primary-foreground leading-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -441,17 +447,17 @@ const logoImages = [
             >
               {t('heroTitle')}
             </motion.h1>
-            
-            <motion.h2 
-              className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-8 text-primary-foreground/90 bg-gradient-to-r from-primary-foreground/90 to-primary-foreground/80 bg-clip-text text-transparent"
+
+            <motion.h2
+              className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-8 text-primary-foreground/90 bg-gradient-to-r from-primary-foreground/90 to-primary-foreground/80 bg-clip-text"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
               {t('heroSubtitle')}
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               className="text-lg md:text-xl lg:text-2xl text-primary-foreground/90 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -459,23 +465,30 @@ const logoImages = [
             >
               {t('heroDescription')}
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
             >
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl">
+             
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/collection")}
+                  className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl"
+                >
                   <BookOpen className="mr-3 h-6 w-6" />
-                  {t('exploreCollections')}
+                  {t("exploreCollections")}
                   <ArrowUpRight className="ml-2 h-5 w-5" />
                 </Button>
               </motion.div>
-              
+
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl">
+                <Button size="lg"
+                  onClick={() => navigate("/membership")}
+                  className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl">
                   <Users className="mr-3 h-6 w-6" />
                   {t('becomeMember')}
                   <ArrowUpRight className="ml-2 h-5 w-5" />
@@ -487,8 +500,8 @@ const logoImages = [
       </section>
 
       {/* Image Carousel Section */}
-      <section className={`py-20 ${themeClasses.sectionBackground}`} 
-        ref={el => sectionRefs.current[0] = el}>
+      {/* <section className={`py-20 ${themeClasses.sectionBackground}`}
+        ref={(el: any) => sectionRefs.current[0] = el}>
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -497,7 +510,7 @@ const logoImages = [
             viewport={{ once: true }}
             className="max-w-6xl mx-auto"
           >
-            {/* Section Header */}
+           
             <div className="text-center mb-16">
               <motion.div
                 initial={{ scale: 0 }}
@@ -510,8 +523,8 @@ const logoImages = [
                   <Building className="h-8 w-8 text-primary-foreground" />
                 </div>
               </motion.div>
-              
-              <motion.h2 
+
+              <motion.h2
                 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 gradient-text"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -520,7 +533,7 @@ const logoImages = [
               >
                 Entrance Facade & Library Premises
               </motion.h2>
-              <motion.p 
+              <motion.p
                 className="text-lg text-muted-foreground max-w-2xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -531,13 +544,13 @@ const logoImages = [
               </motion.p>
             </div>
 
-            {/* Enhanced Image Carousel */}
-            <motion.div 
+           
+            <motion.div
               className="relative bg-card rounded-3xl shadow-2xl overflow-hidden border border-border"
               whileHover={{ boxShadow: "var(--shadow-hero)" }}
               transition={{ duration: 0.3 }}
             >
-              {/* Main Image */}
+              
               <div className="relative h-96 md:h-[500px] lg:h-[600px] overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -552,25 +565,25 @@ const logoImages = [
                     whileHover={{ scale: 1.05 }}
                   />
                 </AnimatePresence>
-                
-                {/* Gradient Overlay */}
+
+              
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
                 
-                {/* Image Overlay Text */}
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <motion.h3 
+                    <motion.h3
                       className="text-2xl lg:text-3xl font-bold text-white mb-3"
                       whileHover={{ x: 10 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
                       {libraryImages[currentImageIndex].title}
                     </motion.h3>
-                    <motion.p 
+                    <motion.p
                       className="text-primary-foreground/90 text-lg max-w-2xl"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -581,7 +594,7 @@ const logoImages = [
                   </motion.div>
                 </div>
 
-                {/* Enhanced Navigation Arrows */}
+              
                 <motion.button
                   onClick={prevImage}
                   className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 border border-white/20"
@@ -590,7 +603,7 @@ const logoImages = [
                 >
                   <ChevronLeft className="h-6 w-6" />
                 </motion.button>
-                
+
                 <motion.button
                   onClick={nextImage}
                   className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 border border-white/20"
@@ -600,7 +613,7 @@ const logoImages = [
                   <ChevronRight className="h-6 w-6" />
                 </motion.button>
 
-                {/* Enhanced Play/Pause Button */}
+             
                 <motion.button
                   onClick={() => setIsAutoPlaying(!isAutoPlaying)}
                   className="absolute top-6 right-6 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-300 border border-white/20"
@@ -611,17 +624,16 @@ const logoImages = [
                 </motion.button>
               </div>
 
-              {/* Enhanced Image Indicators */}
+           
               <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
                 {libraryImages.map((_, index) => (
                   <motion.button
                     key={index}
                     onClick={() => goToImage(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentImageIndex 
-                        ? 'bg-primary scale-125' 
-                        : 'bg-white/60 hover:bg-white/80'
-                    }`}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentImageIndex
+                      ? 'bg-primary scale-125'
+                      : 'bg-white/60 hover:bg-white/80'
+                      }`}
                     whileHover={{ scale: 1.3 }}
                     whileTap={{ scale: 0.9 }}
                   />
@@ -630,14 +642,20 @@ const logoImages = [
             </motion.div>
           </motion.div>
         </div>
-      </section>
+      </section> */}
+      {/* Dynamic Carousel Section */}
+<DynamicCarousel 
+  themeClasses={themeClasses}
+  sectionRefs={sectionRefs}
+  sectionIndex={0} // This should be the index where your carousel was (0 in your case)
+/>
 
       {/* Moving Library Images */}
-      <MovingLibraryImages />
+      <DynamicHomeSlider />
 
       {/* Introduction Section */}
-      <section className={`py-20 ${themeClasses.pageBackground}`} 
-        ref={el => sectionRefs.current[1] = el}>
+      <section className={`py-20 ${themeClasses.pageBackground}`}
+        ref={(el: any) => sectionRefs.current[1] = el}>
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -667,7 +685,7 @@ const logoImages = [
                   </motion.div>
                   <h2 className="text-3xl lg:text-4xl font-bold gradient-text">Historical Legacy</h2>
                 </motion.div>
-                
+
                 <motion.div
                   variants={containerVariants}
                   initial="hidden"
@@ -675,35 +693,40 @@ const logoImages = [
                   viewport={{ once: true }}
                 >
                   <motion.p
-                    variants={itemVariants} 
+                    //@ts-ignore
+                    variants={itemVariants}
                     className="text-lg text-muted-foreground mb-6 leading-relaxed"
                   >
-                    Government Public Library Prayagraj, earlier known as Allahabad Public Library, 
-                    is situated in the historical and holy city of Prayagraj. Established in 1864 
-                    with the approval of the Governor, this library stands as a testament to 
+                    Government Public Library Prayagraj, earlier known as Allahabad Public Library,
+                    is situated in the historical and holy city of Prayagraj. Established in 1864
+                    with the approval of the Governor, this library stands as a testament to
                     intellectual heritage.
                   </motion.p>
-                  <motion.p 
-                    variants={itemVariants} 
+                  <motion.p
+                    //@ts-ignore
+                    variants={itemVariants}
                     className="text-lg text-muted-foreground mb-8 leading-relaxed"
                   >
-                    The beautiful library building, laid by Lt Governor Sir William Muir in Alfred Park 
-                    (now Chandra Shekhar Azad Park), is an architectural marvel of the eighteenth century 
+                    The beautiful library building, laid by Lt Governor Sir William Muir in Alfred Park
+                    (now Chandra Shekhar Azad Park), is an architectural marvel of the eighteenth century
                     and a magnificent example of Gothic/Scottish sculpture designed by R Roskell Bayne.
                   </motion.p>
-                  
-                  <motion.div 
-                    variants={itemVariants} 
+
+                  <motion.div
+                    //@ts-ignore
+                    variants={itemVariants}
                     whileHover={{ scale: 1.02 }}
                   >
-                    <Button className={`${themeClasses.buttonPrimary} px-8 py-3 shadow-lg`}>
+                    <Button
+                      onClick={() => navigate("/archives/history")}
+                      className={`${themeClasses.buttonPrimary} px-8 py-3 shadow-lg`}>
                       Explore History
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </motion.div>
                 </motion.div>
               </motion.div>
-              
+
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -712,6 +735,7 @@ const logoImages = [
                 className="relative"
               >
                 <motion.div
+                  //@ts-ignore
                   variants={hoverCardVariants}
                   initial="initial"
                   whileHover="hover"
@@ -726,7 +750,7 @@ const logoImages = [
                       <BookOpen size={60} />
                     </div>
                   </div>
-                  
+
                   <motion.div
                     className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-6 shadow-lg"
                     whileHover={{ rotate: 360, scale: 1.1 }}
@@ -734,25 +758,25 @@ const logoImages = [
                   >
                     <Building className="h-8 w-8 text-primary-foreground" />
                   </motion.div>
-                  
-                  <motion.h3 
+
+                  <motion.h3
                     className="text-2xl lg:text-3xl font-bold mb-4 gradient-text"
                     whileHover={{ x: 5 }}
                   >
                     Architectural Heritage
                   </motion.h3>
-                  
-                  <motion.p 
+
+                  <motion.p
                     className="text-muted-foreground leading-relaxed text-lg"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ delay: 0.4 }}
                   >
-                    The first sitting of "Legislative Council of the North-Western Provinces of Awadh" 
-                    was held in the main hall on January 08, 1887. This sacred place has been a center 
+                    The first sitting of "Legislative Council of the North-Western Provinces of Awadh"
+                    was held in the main hall on January 08, 1887. This sacred place has been a center
                     of intellectual activities since its inception.
                   </motion.p>
-                  
+
                   {/* Floating elements */}
                   <motion.div
                     className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full"
@@ -771,21 +795,23 @@ const logoImages = [
 
       {/* Welcome Message Section with Dr. Gopal M Shukla */}
       <section className={`py-20 ${themeClasses.heroBackground} relative overflow-hidden`}
-        ref={el => sectionRefs.current[2] = el}>
+        ref={(el: any) => sectionRefs.current[2] = el}>
         {/* Animated Background Elements */}
         <motion.div
           className="absolute top-10 left-10 text-primary-foreground/10"
+          //@ts-ignore
           animate={floatingAnimation}
         >
           <Trophy size={60} />
         </motion.div>
         <motion.div
           className="absolute bottom-10 right-10 text-primary-foreground/10"
+          //@ts-ignore
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 1.5 } }}
         >
           <Award size={70} />
         </motion.div>
-        
+
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -795,6 +821,7 @@ const logoImages = [
             className="max-w-4xl mx-auto"
           >
             <motion.div
+              //@ts-ignore
               variants={hoverCardVariants}
               initial="initial"
               whileHover="hover"
@@ -808,7 +835,7 @@ const logoImages = [
                     <BookOpen className="absolute top-4 left-4" size={40} />
                     <Users className="absolute bottom-4 right-4" size={50} />
                   </div>
-                  
+
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -817,7 +844,7 @@ const logoImages = [
                     className="text-center relative z-10"
                   >
                     <GMSImage />
-                    
+
                     <motion.div
                       className="mt-6"
                       initial={{ opacity: 0, y: 20 }}
@@ -832,7 +859,7 @@ const logoImages = [
                       >
                         <Trophy className="h-6 w-6 text-primary-foreground" />
                       </motion.div>
-                      <motion.h3 
+                      <motion.h3
                         className="text-xl font-bold text-foreground"
                         whileHover={{ scale: 1.05 }}
                       >
@@ -860,7 +887,7 @@ const logoImages = [
                         Welcome to Prayagraj Library
                       </h2>
                     </motion.div>
-                    
+
                     <motion.div
                       variants={containerVariants}
                       initial="hidden"
@@ -869,25 +896,27 @@ const logoImages = [
                       className="space-y-4 text-foreground"
                     >
                       <motion.p
-                        variants={itemVariants} 
+                        //@ts-ignore
+                        variants={itemVariants}
                         className="text-lg leading-relaxed"
                       >
-                        It is a great pleasure to welcome you to the Government Public Library Prayagraj. 
-                        We have a large collection covering various subjects and languages, determined to 
-                        provide quality study materials and the best library services for intellectual 
+                        It is a great pleasure to welcome you to the Government Public Library Prayagraj.
+                        We have a large collection covering various subjects and languages, determined to
+                        provide quality study materials and the best library services for intellectual
                         development and welfare of society.
                       </motion.p>
-                      <motion.p 
-                        variants={itemVariants} 
+                      <motion.p
+                        //@ts-ignore
+                        variants={itemVariants}
                         className="text-lg leading-relaxed"
                       >
-                        Our main objective is to acquire useful study materials, maintain and preserve them 
-                        for future generations. Reading is the way of life in a lifelong learning process - 
+                        Our main objective is to acquire useful study materials, maintain and preserve them
+                        for future generations. Reading is the way of life in a lifelong learning process -
                         the nation that reads, leads.
                       </motion.p>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       className="flex items-center justify-end mt-8"
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -895,7 +924,7 @@ const logoImages = [
                       viewport={{ once: true }}
                     >
                       <div className="text-right mr-4">
-                        <motion.p 
+                        <motion.p
                           className="font-semibold text-lg text-foreground"
                           whileHover={{ scale: 1.02 }}
                         >
@@ -921,7 +950,7 @@ const logoImages = [
 
       {/* Vision & Mission Section */}
       <section className={`py-20 ${themeClasses.sectionBackground}`}
-        ref={el => sectionRefs.current[3] = el}>
+        ref={(el: any) => sectionRefs.current[3] = el}>
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -941,8 +970,8 @@ const logoImages = [
                   <Target className="h-10 w-10 text-primary-foreground" />
                 </div>
               </motion.div>
-              
-              <motion.h2 
+
+              <motion.h2
                 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 gradient-text"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -951,7 +980,7 @@ const logoImages = [
               >
                 Vision & Mission
               </motion.h2>
-              
+
               <motion.p
                 className="text-lg text-muted-foreground max-w-2xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
@@ -972,6 +1001,7 @@ const logoImages = [
                 viewport={{ once: true }}
               >
                 <motion.div
+                  //@ts-ignore
                   variants={hoverCardVariants}
                   initial="initial"
                   whileHover="hover"
@@ -998,7 +1028,7 @@ const logoImages = [
                         "Intellectual empowerment of society",
                         "Conservation of intellectual heritage"
                       ].map((item, index) => (
-                        <motion.li 
+                        <motion.li
                           key={index}
                           className="flex items-start"
                           initial={{ opacity: 0, x: -20 }}
@@ -1007,7 +1037,7 @@ const logoImages = [
                           viewport={{ once: true }}
                           whileHover={{ x: 5 }}
                         >
-                          <motion.span 
+                          <motion.span
                             className="text-primary mr-2 mt-1"
                             whileHover={{ scale: 1.2 }}
                           >
@@ -1029,6 +1059,7 @@ const logoImages = [
                 viewport={{ once: true }}
               >
                 <motion.div
+                  //@ts-ignore
                   variants={hoverCardVariants}
                   initial="initial"
                   whileHover="hover"
@@ -1049,7 +1080,7 @@ const logoImages = [
                   <CardContent>
                     <div className="space-y-4">
                       {coreValues.map((value, index) => (
-                        <motion.div 
+                        <motion.div
                           key={index}
                           className="flex items-start space-x-3"
                           initial={{ opacity: 0, y: 10 }}
@@ -1083,6 +1114,7 @@ const logoImages = [
                 viewport={{ once: true }}
               >
                 <motion.div
+                  //@ts-ignore
                   variants={hoverCardVariants}
                   initial="initial"
                   whileHover="hover"
@@ -1103,7 +1135,7 @@ const logoImages = [
                   <CardContent>
                     <ul className="space-y-3">
                       {objectives.map((objective, index) => (
-                        <motion.li 
+                        <motion.li
                           key={index}
                           className="flex items-start"
                           initial={{ opacity: 0, x: -20 }}
@@ -1112,7 +1144,7 @@ const logoImages = [
                           viewport={{ once: true }}
                           whileHover={{ x: 5 }}
                         >
-                          <motion.span 
+                          <motion.span
                             className="text-primary mr-2 mt-1"
                             whileHover={{ scale: 1.2 }}
                           >
@@ -1132,7 +1164,7 @@ const logoImages = [
 
       {/* Stats Section */}
       <section className={`py-20 ${themeClasses.pageBackground}`}
-        ref={el => sectionRefs.current[4] = el}>
+        ref={(el: any) => sectionRefs.current[4] = el}>
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1164,8 +1196,8 @@ const logoImages = [
                     transition={{ duration: 0.8 }}
                   />
                 </motion.div>
-                
-                <motion.h3 
+
+                <motion.h3
                   className="text-3xl lg:text-4xl font-bold mb-3 gradient-text"
                   initial={{ scale: 0.8 }}
                   whileInView={{ scale: 1 }}
@@ -1174,8 +1206,8 @@ const logoImages = [
                 >
                   {stat.value}
                 </motion.h3>
-                
-                <motion.p 
+
+                <motion.p
                   className="text-muted-foreground font-medium"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -1192,7 +1224,7 @@ const logoImages = [
 
       {/* Services Section */}
       <section className={`py-20 ${themeClasses.sectionBackground}`}
-        ref={el => sectionRefs.current[5] = el}>
+        ref={(el: any) => sectionRefs.current[5] = el}>
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1212,8 +1244,8 @@ const logoImages = [
                 <Sparkles className="h-10 w-10 text-primary-foreground" />
               </div>
             </motion.div>
-            
-            <motion.h2 
+
+            <motion.h2
               className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 gradient-text"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1222,8 +1254,8 @@ const logoImages = [
             >
               {t('ourServices')}
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               className="text-lg text-muted-foreground max-w-2xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1244,6 +1276,7 @@ const logoImages = [
                 viewport={{ once: true }}
               >
                 <motion.div
+                  //@ts-ignore
                   variants={hoverCardVariants}
                   initial="initial"
                   whileHover="hover"
@@ -1251,9 +1284,9 @@ const logoImages = [
                 >
                   {/* Background Gradient */}
                   <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 ${service.gradient}`} />
-                  
+
                   <CardHeader className="text-center pb-4 relative z-10">
-                    <motion.div 
+                    <motion.div
                       className={`w-16 h-16 ${service.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg relative overflow-hidden`}
                       whileHover={{ scale: 1.1, rotate: 360 }}
                       transition={{ duration: 0.6 }}
@@ -1269,20 +1302,20 @@ const logoImages = [
                     </motion.div>
                     <CardTitle className="text-lg text-foreground">{service.title}</CardTitle>
                   </CardHeader>
-                  
+
                   <CardContent className="text-center relative z-10">
                     <CardDescription className="mb-6 text-muted-foreground">
                       {service.description}
                     </CardDescription>
-                    
+
                     <Link to={service.href}>
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className={`${themeClasses.buttonSecondary} transition-all duration-300 group/btn`}
                         >
                           {t('learnMore')}
@@ -1305,397 +1338,382 @@ const logoImages = [
       </section>
 
       {/* Events & Notices Section */}
-     
+
 
       {/* Important Links Section */}
-<section className={`py-20 ${themeClasses.pageBackground}`} 
-  ref={el => sectionRefs.current[6] = el}>
-  <div className="container mx-auto px-4">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-      {/* Featured Events */}
-      <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <motion.div 
-          className="flex items-center mb-8"
-          whileHover={{ x: 10 }}
-        >
-          <motion.div
-            className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center mr-4 shadow-lg"
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Calendar className="h-6 w-6 text-primary-foreground" />
-          </motion.div>
-          <h3 className="text-2xl lg:text-3xl font-bold gradient-text">
-            {t('featuredEvents')}
-          </h3>
-        </motion.div>
-        
-        <div className="space-y-6">
-          {events.map((event, index) => (
+      <section className={`py-20 ${themeClasses.pageBackground}`}
+        ref={(el: any) => sectionRefs.current[6] = el}>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Featured Events */}
             <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
               <motion.div
-                variants={hoverCardVariants}
-                initial="initial"
-                whileHover="hover"
-                className="card-premium rounded-3xl overflow-hidden border border-border"
+                className="flex items-center mb-8"
+                whileHover={{ x: 10 }}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <motion.div 
-                      className="bg-gradient-primary text-primary-foreground rounded-xl p-4 text-center min-w-[70px] shadow-lg"
-                      whileHover={{ scale: 1.05 }}
+                <motion.div
+                  className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center mr-4 shadow-lg"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Calendar className="h-6 w-6 text-primary-foreground" />
+                </motion.div>
+                <h3 className="text-2xl lg:text-3xl font-bold gradient-text">
+                  {t('featuredEvents')}
+                </h3>
+              </motion.div>
+
+              <div className="space-y-6">
+                {events.map((event, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      //@ts-ignore
+                      variants={hoverCardVariants}
+                      initial="initial"
+                      whileHover="hover"
+                      className="card-premium rounded-3xl overflow-hidden border border-border"
                     >
-                      <div className="text-sm font-medium">{event.date}</div>
+                      <CardContent className="p-6">
+                        <div className="flex items-start space-x-4">
+                          <motion.div
+                            className="bg-gradient-primary text-primary-foreground rounded-xl p-4 text-center min-w-[70px] shadow-lg"
+                            whileHover={{ scale: 1.05 }}
+                          >
+                            <div className="text-sm font-medium">{event.date}</div>
+                          </motion.div>
+
+                          <div className="flex-1">
+                            <motion.h4
+                              className="font-semibold text-lg mb-2 text-foreground"
+                              whileHover={{ x: 5 }}
+                            >
+                              {event.title}
+                            </motion.h4>
+
+                            <motion.p
+                              className="text-muted-foreground mb-3"
+                              initial={{ opacity: 0 }}
+                              whileInView={{ opacity: 1 }}
+                              transition={{ delay: index * 0.1 + 0.2 }}
+                              viewport={{ once: true }}
+                            >
+                              {event.description}
+                            </motion.p>
+
+                            <motion.div
+                              className="flex items-center text-sm text-primary"
+                              whileHover={{ x: 5 }}
+                            >
+                              <Clock className="h-4 w-4 mr-2" />
+                              <span>{event.time}</span>
+                            </motion.div>
+                          </div>
+                        </div>
+                      </CardContent>
                     </motion.div>
-                    
-                    <div className="flex-1">
-                      <motion.h4 
-                        className="font-semibold text-lg mb-2 text-foreground"
-                        whileHover={{ x: 5 }}
-                      >
-                        {event.title}
-                      </motion.h4>
-                      
-                      <motion.p 
-                        className="text-muted-foreground mb-3"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: index * 0.1 + 0.2 }}
-                        viewport={{ once: true }}
-                      >
-                        {event.description}
-                      </motion.p>
-                      
-                      <motion.div 
-                        className="flex items-center text-sm text-primary"
-                        whileHover={{ x: 5 }}
-                      >
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span>{event.time}</span>
-                      </motion.div>
-                    </div>
-                  </div>
-                </CardContent>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.div
+                className="mt-8 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+              
               </motion.div>
             </motion.div>
-          ))}
-        </div>
-        
-        <motion.div 
-          className="mt-8 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
-          <Link to="/events">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button variant="outline" className={`${themeClasses.buttonSecondary} px-8`}>
-                {t('viewAllEvents')}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </motion.div>
-          </Link>
-        </motion.div>
-      </motion.div>
 
-      {/* Important Links */}
-      <motion.div
-        initial={{ opacity: 0, x: 30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <motion.div 
-          className="flex items-center mb-8"
-          whileHover={{ x: 10 }}
-        >
-          <motion.div
-            className="w-12 h-12 bg-gradient-secondary rounded-xl flex items-center justify-center mr-4 shadow-lg"
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.6 }}
-          >
-            <BookOpen className="h-6 w-6 text-primary-foreground" />
-          </motion.div>
-          <h3 className="text-2xl lg:text-3xl font-bold gradient-text">
-            Important Links
-          </h3>
-        </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            {
-              icon: BookOpen,
-              title: 'Gazette',
-              description: 'Historical gazettes collection',
-              href: '/gazette',
-              color: 'bg-blue-500'
-            },
-            {
-              icon: Newspaper,
-              title: 'Magazine',
-              description: 'Magazines in multiple languages',
-              href: '/magazine',
-              color: 'bg-green-500'
-            },
-            {
-              icon: ScrollText,
-              title: 'Pandulipi Sanskriti',
-              description: 'Ancient manuscripts',
-              href: '/pandulipi-sanskriti',
-              color: 'bg-amber-500'
-            },
-            {
-              icon: Archive,
-              title: 'Old Bound Newspapers',
-              description: 'Historical newspaper volumes',
-              href: '/old-bound-newspapers',
-              color: 'bg-red-500'
-            },
-            {
-              icon: FileText,
-              title: 'Newspapers Availability',
-              description: 'Current subscriptions',
-              href: '/newspapers-availability',
-              color: 'bg-indigo-500'
-            },
-            {
-              icon: ArrowRight,
-              title: 'View All Links',
-              description: 'Explore all resources',
-              href: '/important-links',
-              color: 'bg-purple-500'
-            }
-          ].map((link, index) => (
+            {/* Important Links */}
             <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Link to={link.href}>
+              <motion.div
+                className="flex items-center mb-8"
+                whileHover={{ x: 10 }}
+              >
                 <motion.div
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  className="card-premium rounded-2xl overflow-hidden border border-border p-4 group cursor-pointer"
+                  className="w-12 h-12 bg-gradient-secondary rounded-xl flex items-center justify-center mr-4 shadow-lg"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
                 >
-                  <div className="flex items-center space-x-4">
-                    <motion.div 
-                      className={`w-12 h-12 ${link.color} rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden`}
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      <link.icon className="h-6 w-6 text-white z-10" />
-                    </motion.div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {link.title}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {link.description}
-                      </p>
-                    </div>
-                    <motion.div
-                      initial={{ x: 0 }}
-                      whileHover={{ x: 5 }}
-                    >
-                      <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                    </motion.div>
-                  </div>
+                  <BookOpen className="h-6 w-6 text-primary-foreground" />
                 </motion.div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-        
-        <motion.div 
-          className="mt-8 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
-          <Link to="/important-links">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button className={`${themeClasses.buttonPrimary} px-8`}>
-                Explore All Resources
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </motion.div>
-          </Link>
-        </motion.div>
-      </motion.div>
-    </div>
-  </div>
-</section>
+                <h3 className="text-2xl lg:text-3xl font-bold gradient-text">
+                  Important Links
+                </h3>
+              </motion.div>
 
-{/* Today's Visitors & Moving Logos Section */}
-<section className={`py-16 ${themeClasses.sectionBackground}`}>
-  <div className="container mx-auto px-4">
-    {/* Today's Visitors Counter */}
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="text-center mb-12"
-    >
-      <motion.div
-        className="inline-flex items-center justify-center space-x-4 bg-card rounded-2xl px-8 py-6 shadow-2xl border border-border"
-        whileHover={{ scale: 1.02 }}
-        transition={{ type: "spring", stiffness: 300 }}
-      >
-        <motion.div
-          className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center"
-          animate={{ 
-            rotate: [0, 10, -10, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <Eye className="h-6 w-6 text-primary-foreground" />
-        </motion.div>
-        <div className="text-left">
-          <motion.p 
-            className="text-muted-foreground text-sm font-medium mb-1"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            Today's Visitors
-          </motion.p>
-          <motion.div 
-            className="flex items-baseline space-x-2"
-            initial={{ opacity: 0, y: 10 }}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  {
+                    icon: BookOpen,
+                    title: 'Gazette',
+                    description: 'Historical gazettes collection',
+                    href: '/gazette',
+                    color: 'bg-blue-500'
+                  },
+                  {
+                    icon: Newspaper,
+                    title: 'Magazine',
+                    description: 'Magazines in multiple languages',
+                    href: '/magazine',
+                    color: 'bg-green-500'
+                  },
+                  {
+                    icon: ScrollText,
+                    title: 'Pandulipi Sanskriti',
+                    description: 'Ancient manuscripts',
+                    href: '/pandulipi-sanskriti',
+                    color: 'bg-amber-500'
+                  },
+                  {
+                    icon: Archive,
+                    title: 'Old Bound Newspapers',
+                    description: 'Historical newspaper volumes',
+                    href: '/old-bound-newspapers',
+                    color: 'bg-red-500'
+                  },
+                  {
+                    icon: FileText,
+                    title: 'Newspapers Availability',
+                    description: 'Current subscriptions',
+                    href: '/newspapers-availability',
+                    color: 'bg-indigo-500'
+                  },
+                  {
+                    icon: ArrowRight,
+                    title: 'View All Links',
+                    description: 'Explore all resources',
+                    href: '/important-links',
+                    color: 'bg-purple-500'
+                  }
+                ].map((link, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <Link to={link.href}>
+                      <motion.div
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        className="card-premium rounded-2xl overflow-hidden border border-border p-4 group cursor-pointer"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <motion.div
+                            className={`w-12 h-12 ${link.color} rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden`}
+                            whileHover={{ scale: 1.1 }}
+                          >
+                            <link.icon className="h-6 w-6 text-white z-10" />
+                          </motion.div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {link.title}
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              {link.description}
+                            </p>
+                          </div>
+                          <motion.div
+                            initial={{ x: 0 }}
+                            whileHover={{ x: 5 }}
+                          >
+                            <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                          </motion.div>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.div
+                className="mt-8 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                <Link to="/important-links">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button className={`${themeClasses.buttonPrimary} px-8`}>
+                      Explore All Resources
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Today's Visitors & Moving Logos Section */}
+      <section className={`py-16 ${themeClasses.sectionBackground}`}>
+        <div className="container mx-auto px-4">
+          {/* Today's Visitors Counter */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
           >
-            <span className="text-3xl lg:text-4xl font-bold gradient-text">1,247</span>
-            <motion.span 
-              className="text-success text-sm font-medium flex items-center"
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2, repeat: Infinity }}
+            <motion.div
+              className="inline-flex items-center justify-center space-x-4 bg-card rounded-2xl px-8 py-6 shadow-2xl border border-border"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              <TrendingUp className="h-4 w-4 mr-1" />
-              +12%
-            </motion.span>
+              <motion.div
+                className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center"
+                animate={{
+                  rotate: [0, 10, -10, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Eye className="h-6 w-6 text-primary-foreground" />
+              </motion.div>
+              <div className="text-left">
+                <motion.p
+                  className="text-muted-foreground text-sm font-medium mb-1"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  Today's Visitors
+                </motion.p>
+                <motion.div
+                  className="flex items-baseline space-x-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <span className="text-3xl lg:text-4xl font-bold gradient-text">1,247</span>
+                  <motion.span
+                    className="text-success text-sm font-medium flex items-center"
+                    animate={{ opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <TrendingUp className="h-4 w-4 mr-1" />
+                    +12%
+                  </motion.span>
+                </motion.div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+{/* Moving Logos Marquee - LARGE PURE IMAGES */}
+<motion.div
+  initial={{ opacity: 0 }}
+  whileInView={{ opacity: 1 }}
+  transition={{ duration: 0.8 }}
+  viewport={{ once: true }}
+  className="relative overflow-hidden my-4 py-2"
+>
+  <motion.div
+    className="flex space-x-20"
+    animate={{ x: [0, -3000] }}
+    transition={{
+      x: {
+        repeat: Infinity,
+        repeatType: "loop",
+        duration: 50,
+        ease: "linear",
+      },
+    }}
+  >
+    {/* Large pure images */}
+    {logoImages.map((logo, index) => (
+      <motion.img
+        key={`logo-${index}-1`}
+        src={logo.src}
+        alt={logo.alt}
+        className="w-56 h-56 object-contain flex-shrink-0"
+        whileHover={{
+          scale: 1.15,
+          rotate: 8,
+          y: -8,
+        }}
+        transition={{ type: "spring", stiffness: 200, damping: 8 }}
+      />
+    ))}
+
+    {/* Duplicate set */}
+    {logoImages.map((logo, index) => (
+      <motion.img
+        key={`logo-${index}-2`}
+        src={logo.src}
+        alt={logo.alt}
+        className="w-56 h-56 object-contain flex-shrink-0"
+        whileHover={{
+          scale: 1.15,
+          rotate: 8,
+          y: -8,
+        }}
+        transition={{ type: "spring", stiffness: 200, damping: 8 }}
+      />
+    ))}
+  </motion.div>
+</motion.div>
+
+
+          {/* Section Description */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <motion.p
+              className="text-muted-foreground text-lg max-w-2xl mx-auto"
+              whileHover={{ scale: 1.02 }}
+            >
+              Trusted by educational institutions, government organizations, and knowledge partners nationwide
+            </motion.p>
           </motion.div>
         </div>
-      </motion.div>
-    </motion.div>
-
-    {/* Moving Logos Marquee */}
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-      className="relative overflow-hidden"
-    >
-      {/* Gradient Overlays */}
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background-secondary to-transparent z-10" />
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background-secondary to-transparent z-10" />
-      
-      <motion.div
-        className="flex space-x-8"
-        animate={{
-          x: [0, -1032], // Adjusted to match exact width of all logos
-        }}
-        transition={{
-          x: {
-            repeat: Infinity,
-            repeatType: "loop",
-            duration: 30,
-            ease: "linear",
-          },
-        }}
-      >
-        {/* First Set of Logos */}
-        {logoImages.map((logo, index) => (
-          <motion.div
-            key={`logo-${index}-1`}
-            className="flex-shrink-0 w-28 h-28 bg-white rounded-2xl flex items-center justify-center p-4 border border-border shadow-lg hover:shadow-xl transition-all"
-            whileHover={{ 
-              scale: 1.1,
-              rotate: 5,
-            }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              className="w-full h-full object-contain hover:scale-110 transition-transform duration-300"
-            />
-          </motion.div>
-        ))}
-        
-        {/* Duplicate Set for Seamless Loop */}
-        {logoImages.map((logo, index) => (
-          <motion.div
-            key={`logo-${index}-2`}
-            className="flex-shrink-0 w-28 h-28 bg-white rounded-2xl flex items-center justify-center p-4 border border-border shadow-lg hover:shadow-xl transition-all"
-            whileHover={{ 
-              scale: 1.1,
-              rotate: 5,
-            }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              className="w-full h-full object-contain hover:scale-110 transition-transform duration-300"
-            />
-          </motion.div>
-        ))}
-      </motion.div>
-    </motion.div>
-
-    {/* Section Description */}
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.4 }}
-      viewport={{ once: true }}
-      className="text-center mt-12"
-    >
-      <motion.p 
-        className="text-muted-foreground text-lg max-w-2xl mx-auto"
-        whileHover={{ scale: 1.02 }}
-      >
-        Trusted by educational institutions, government organizations, and knowledge partners nationwide
-      </motion.p>
-    </motion.div>
-  </div>
-</section>
+      </section>
       {/* CTA Section */}
       <section className={`py-20 ${themeClasses.heroBackground} relative overflow-hidden`}
-        ref={el => sectionRefs.current[7] = el}>
+        ref={(el: any) => sectionRefs.current[7] = el}>
         {/* Animated Background Elements */}
         <motion.div
           className="absolute top-10 left-10 text-primary-foreground/10"
+          //@ts-ignore
           animate={floatingAnimation}
         >
           <BookOpen size={80} />
         </motion.div>
         <motion.div
           className="absolute bottom-10 right-10 text-primary-foreground/10"
+          //@ts-ignore
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 1 } }}
         >
           <Users size={90} />
         </motion.div>
-        
+
         <div className="absolute inset-0 bg-black/10"></div>
-        
+
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1715,8 +1733,8 @@ const logoImages = [
                 <Award className="h-10 w-10 text-primary-foreground" />
               </div>
             </motion.div>
-            
-            <motion.h2 
+
+            <motion.h2
               className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1725,8 +1743,8 @@ const logoImages = [
             >
               {t('startJourney')}
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               className="text-lg md:text-xl mb-10 max-w-2xl mx-auto text-primary-foreground/90 leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1735,8 +1753,8 @@ const logoImages = [
             >
               {t('ctaDescription')}
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -1751,7 +1769,7 @@ const logoImages = [
                   </Button>
                 </motion.div>
               </Link>
-              
+
               <Link to="/contact">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button size="lg" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl">
