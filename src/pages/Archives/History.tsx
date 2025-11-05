@@ -116,12 +116,12 @@ export default function History() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text">
+          <h1 className="text-4xl md:text-5xl font-bold pb-4 gradient-text">
             {displayData.firmName}
-          </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          </h1> 
+          {/* <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
             A Glimpse into the Glorious Past of {displayData.firmName}
-          </p>
+          </p> */}
         </motion.div>
 
         {/* Info Grid */}

@@ -36,17 +36,19 @@ import {
   FileText
 } from 'lucide-react';
 import ThreeHero from '../components/ThreeHero';
-import MovingLibraryImages from '../components/MovingLibraryImages';
+import DynamicHomeSlider from '../components/DynamicHomeSlider';
+import DynamicCarousel from '../components/DynamicCarousel';
+// import DynamicHomeSlider from '../components/DynamicHomeSlider';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from '../utils/translations';
 import gmsImage from '../assets/gms.webp';
-import entranceFacade from '../assets/entrance-facade.jpg';
-import readingHall from '../assets/bookshelf-interior.jpg';
-import rareBooks from '../assets/rare-books.jpg';
-import digitalSection from '../assets/digital-section.jpg';
-import gardenView from '../assets/IMG-20250925-WA0040.jpg';
+// import entranceFacade from '../assets/entrance-facade.jpg';
+// import readingHall from '../assets/bookshelf-interior.jpg';
+// import rareBooks from '../assets/rare-books.jpg';
+// import digitalSection from '../assets/digital-section.jpg';
+// import gardenView from '../assets/IMG-20250925-WA0040.jpg';
 import p1 from '../ExternalLogoImages/p1.webp';
 import p2 from '../ExternalLogoImages/p2.webp';
 import p3 from '../ExternalLogoImages/p3.webp';
@@ -117,51 +119,51 @@ const Home: React.FC = () => {
   };
 
   // Library building images for carousel
-  const libraryImages = [
-    {
-      src: entranceFacade,
-      alt: 'Library Entrance Facade',
-      title: 'Grand Entrance Facade',
-      description: 'The magnificent Gothic/Scottish architecture of Prayagraj Public Library'
-    },
-    {
-      src: readingHall,
-      alt: 'Main Reading Hall',
-      title: 'Spacious Reading Hall',
-      description: 'Peaceful environment for focused study and research'
-    },
-    {
-      src: rareBooks,
-      alt: 'Rare Books Section',
-      title: 'Rare Manuscripts Collection',
-      description: 'Preserving ancient knowledge for future generations'
-    },
-    {
-      src: digitalSection,
-      alt: 'Digital Library Section',
-      title: 'Modern Digital Infrastructure',
-      description: 'Blending traditional knowledge with modern technology'
-    },
-    {
-      src: gardenView,
-      alt: 'Library Garden View',
-      title: 'Serene Campus Environment',
-      description: 'Beautiful surroundings in Chandra Shekhar Azad Park'
-    }
-  ];
+  // const libraryImages = [
+  //   {
+  //     src: entranceFacade,
+  //     alt: 'Library Entrance Facade',
+  //     title: 'Grand Entrance Facade',
+  //     description: 'The magnificent Gothic/Scottish architecture of Prayagraj Public Library'
+  //   },
+  //   {
+  //     src: readingHall,
+  //     alt: 'Main Reading Hall',
+  //     title: 'Spacious Reading Hall',
+  //     description: 'Peaceful environment for focused study and research'
+  //   },
+  //   {
+  //     src: rareBooks,
+  //     alt: 'Rare Books Section',
+  //     title: 'Rare Manuscripts Collection',
+  //     description: 'Preserving ancient knowledge for future generations'
+  //   },
+  //   {
+  //     src: digitalSection,
+  //     alt: 'Digital Library Section',
+  //     title: 'Modern Digital Infrastructure',
+  //     description: 'Blending traditional knowledge with modern technology'
+  //   },
+  //   {
+  //     src: gardenView,
+  //     alt: 'Library Garden View',
+  //     title: 'Serene Campus Environment',
+  //     description: 'Beautiful surroundings in Chandra Shekhar Azad Park'
+  //   }
+  // ];
 
   // Auto-play carousel
-  useEffect(() => {
-    if (!isAutoPlaying) return;
+  // useEffect(() => {
+  //   if (!isAutoPlaying) return;
 
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 4000);
+  //   const interval = setInterval(() => {
+  //     setCurrentImageIndex((prevIndex) =>
+  //       prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
+  //     );
+  //   }, 4000);
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, libraryImages.length]);
+  //   return () => clearInterval(interval);
+  // }, [isAutoPlaying, libraryImages.length]);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -183,17 +185,17 @@ const Home: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  // const nextImage = () => {
+  //   setCurrentImageIndex((prevIndex) =>
+  //     prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
+  //   );
+  // };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? libraryImages.length - 1 : prevIndex - 1
-    );
-  };
+  // const prevImage = () => {
+  //   setCurrentImageIndex((prevIndex) =>
+  //     prevIndex === 0 ? libraryImages.length - 1 : prevIndex - 1
+  //   );
+  // };
 
   const goToImage = (index: number) => {
     setCurrentImageIndex(index);
@@ -498,7 +500,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Image Carousel Section */}
-      <section className={`py-20 ${themeClasses.sectionBackground}`}
+      {/* <section className={`py-20 ${themeClasses.sectionBackground}`}
         ref={(el: any) => sectionRefs.current[0] = el}>
         <div className="container mx-auto px-4">
           <motion.div
@@ -508,7 +510,7 @@ const Home: React.FC = () => {
             viewport={{ once: true }}
             className="max-w-6xl mx-auto"
           >
-            {/* Section Header */}
+           
             <div className="text-center mb-16">
               <motion.div
                 initial={{ scale: 0 }}
@@ -542,13 +544,13 @@ const Home: React.FC = () => {
               </motion.p>
             </div>
 
-            {/* Enhanced Image Carousel */}
+           
             <motion.div
               className="relative bg-card rounded-3xl shadow-2xl overflow-hidden border border-border"
               whileHover={{ boxShadow: "var(--shadow-hero)" }}
               transition={{ duration: 0.3 }}
             >
-              {/* Main Image */}
+              
               <div className="relative h-96 md:h-[500px] lg:h-[600px] overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -564,10 +566,10 @@ const Home: React.FC = () => {
                   />
                 </AnimatePresence>
 
-                {/* Gradient Overlay */}
+              
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                {/* Image Overlay Text */}
+                
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -592,7 +594,7 @@ const Home: React.FC = () => {
                   </motion.div>
                 </div>
 
-                {/* Enhanced Navigation Arrows */}
+              
                 <motion.button
                   onClick={prevImage}
                   className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 border border-white/20"
@@ -611,7 +613,7 @@ const Home: React.FC = () => {
                   <ChevronRight className="h-6 w-6" />
                 </motion.button>
 
-                {/* Enhanced Play/Pause Button */}
+             
                 <motion.button
                   onClick={() => setIsAutoPlaying(!isAutoPlaying)}
                   className="absolute top-6 right-6 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-300 border border-white/20"
@@ -622,7 +624,7 @@ const Home: React.FC = () => {
                 </motion.button>
               </div>
 
-              {/* Enhanced Image Indicators */}
+           
               <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
                 {libraryImages.map((_, index) => (
                   <motion.button
@@ -640,10 +642,16 @@ const Home: React.FC = () => {
             </motion.div>
           </motion.div>
         </div>
-      </section>
+      </section> */}
+      {/* Dynamic Carousel Section */}
+<DynamicCarousel 
+  themeClasses={themeClasses}
+  sectionRefs={sectionRefs}
+  sectionIndex={0} // This should be the index where your carousel was (0 in your case)
+/>
 
       {/* Moving Library Images */}
-      <MovingLibraryImages />
+      <DynamicHomeSlider />
 
       {/* Introduction Section */}
       <section className={`py-20 ${themeClasses.pageBackground}`}
