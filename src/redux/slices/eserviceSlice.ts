@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import api from "../../utils/Url";
 
 // --- Interfaces ---
-interface EServiceRequest {
-  _id: string;
+export interface IEService {
+  _id?: string;
   type: 'Pay Fees' | 'Reissue Book' | 'Request Book';
   name: string;
   email: string;
@@ -16,41 +16,75 @@ interface EServiceRequest {
 }
 
 interface EServiceState {
-  requests: EServiceRequest[];
+  data: IEService[];
   loading: boolean;
   error: string | null;
-  filters: {
-    type: string;
-    email: string;
-    name: string;
-    status: string;
-  };
   currentPage: number;
   rowsPerPage: number;
   totalCount: number;
+  filters: {
+    type?: string;
+    email?: string;
+    name?: string;
+    status?: string;
+  };
 }
 
 const initialState: EServiceState = {
-  requests: [],
+  data: [],
   loading: false,
   error: null,
-  filters: {
-    type: '',
-    email: '',
-    name: '',
-    status: ''
-  },
   currentPage: 1,
   rowsPerPage: 10,
   totalCount: 0,
+  filters: {},
 };
 
-// ✅ GET ALL E-SERVICE REQUESTS
-export const fetchEServiceRequests = createAsyncThunk(
-  "eservice/fetchAll",
-  async (filters: any, { rejectWithValue }) => {
+// ✅ CREATE NEW E-SERVICE REQUEST
+export const createEService = createAsyncThunk(
+  "eservice/create",
+  async (payload: {
+    type: 'Pay Fees' | 'Reissue Book' | 'Request Book';
+    name: string;
+    email: string;
+    details: string;
+  }, { rejectWithValue }) => {
     try {
-      const response = await api.get("/eservice", { params: filters });
+      const response = await api.post('/eServices', payload);
+      const responseData = response.data;
+
+      if (responseData) {
+        toast.success("E-service request submitted successfully!");
+        return responseData;
+      } else {
+        toast.error("Failed to submit request");
+        return rejectWithValue("Failed to submit request");
+      }
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message || "Failed to submit e-service request. Please try again.";
+      toast.error(errorMsg);
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
+// ✅ GET ALL E-SERVICES
+export const fetchEServices = createAsyncThunk(
+  "eservice/fetchAll",
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const state = getState() as any;
+      const filters = state.eservice.filters;
+      
+      // Build query string from filters
+      const queryParams = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) queryParams.append(key, value as string);
+      });
+
+      const url = `/eServices${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const response = await api.get(url);
       return response.data;
     } catch (error: any) {
       const errorMsg =
@@ -61,37 +95,37 @@ export const fetchEServiceRequests = createAsyncThunk(
   }
 );
 
-// ✅ UPDATE REQUEST STATUS
-export const updateRequestStatus = createAsyncThunk(
+// ✅ UPDATE E-SERVICE STATUS
+export const updateEServiceStatus = createAsyncThunk(
   "eservice/updateStatus",
   async ({ id, status }: { id: string; status: 'pending' | 'approved' | 'denied' }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/eservice/${id}/status`, { status });
-      const data = response.data;
+      const response = await api.patch(`/eServices/${id}/status`, { status });
+      const responseData = response.data;
 
-      if (data) {
-        toast.success(`Request ${status} successfully!`);
-        return data.request;
+      if (responseData) {
+        toast.success("Status updated successfully!");
+        return responseData;
       } else {
-        toast.error("Failed to update request status");
-        return rejectWithValue("Failed to update request status");
+        toast.error("Failed to update status");
+        return rejectWithValue("Failed to update status");
       }
     } catch (error: any) {
       const errorMsg =
-        error.response?.data?.message || "Failed to update request status. Please try again.";
+        error.response?.data?.message || "Failed to update status. Please try again.";
       toast.error(errorMsg);
       return rejectWithValue(errorMsg);
     }
   }
 );
 
-// ✅ DELETE REQUEST
-export const deleteRequest = createAsyncThunk(
+// ✅ DELETE E-SERVICE
+export const deleteEService = createAsyncThunk(
   "eservice/delete",
   async (id: string, { rejectWithValue }) => {
     try {
-      await api.delete(`/eservice/${id}`);
-      toast.success("Request deleted successfully!");
+      await api.delete(`/eServices/${id}`);
+      toast.success("E-service request deleted successfully!");
       return id;
     } catch (error: any) {
       const errorMsg =
@@ -107,19 +141,8 @@ const eserviceSlice = createSlice({
   name: "eservice",
   initialState,
   reducers: {
-    clearEserviceError: (state) => {
+    clearEServiceError: (state) => {
       state.error = null;
-    },
-    setFilters: (state, action: PayloadAction<Partial<EServiceState['filters']>>) => {
-      state.filters = { ...state.filters, ...action.payload };
-    },
-    clearFilters: (state) => {
-      state.filters = {
-        type: '',
-        email: '',
-        name: '',
-        status: ''
-      };
     },
     setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
@@ -127,50 +150,80 @@ const eserviceSlice = createSlice({
     setRowsPerPage: (state, action: PayloadAction<number>) => {
       state.rowsPerPage = action.payload;
     },
+    setFilters: (state, action: PayloadAction<any>) => {
+      state.filters = action.payload;
+      state.currentPage = 1; // Reset to first page when filters change
+    },
+    clearEServiceData: (state) => {
+      state.data = [];
+      state.currentPage = 1;
+      state.totalCount = 0;
+      state.filters = {};
+    },
+    clearFormData: (state) => {
+      // This can be used to clear form-related state if needed
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
-      // FETCH REQUESTS
-      .addCase(fetchEServiceRequests.pending, (state) => {
+      // CREATE E-SERVICE
+      .addCase(createEService.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchEServiceRequests.fulfilled, (state, action: PayloadAction<EServiceRequest[]>) => {
+      .addCase(createEService.fulfilled, (state, action) => {
         state.loading = false;
-        state.requests = action.payload;
+        // Add the new request to the beginning of the list
+        state.data.unshift(action.payload.request);
+        state.totalCount = state.data.length;
+      })
+      .addCase(createEService.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // FETCH E-SERVICES
+      .addCase(fetchEServices.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchEServices.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
         state.totalCount = action.payload.length;
       })
-      .addCase(fetchEServiceRequests.rejected, (state, action) => {
+      .addCase(fetchEServices.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       // UPDATE STATUS
-      .addCase(updateRequestStatus.pending, (state) => {
+      .addCase(updateEServiceStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateRequestStatus.fulfilled, (state, action: PayloadAction<EServiceRequest>) => {
+      .addCase(updateEServiceStatus.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.requests.findIndex(request => request._id === action.payload._id);
+        const index = state.data.findIndex(item => item._id === action.payload.request._id);
         if (index !== -1) {
-          state.requests[index] = action.payload;
+          state.data[index] = action.payload.request;
         }
       })
-      .addCase(updateRequestStatus.rejected, (state, action) => {
+      .addCase(updateEServiceStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
-      // DELETE REQUEST
-      .addCase(deleteRequest.pending, (state) => {
+      // DELETE E-SERVICE
+      .addCase(deleteEService.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteRequest.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(deleteEService.fulfilled, (state, action) => {
         state.loading = false;
-        state.requests = state.requests.filter(request => request._id !== action.payload);
-        state.totalCount = state.requests.length;
+        state.data = state.data.filter(item => item._id !== action.payload);
+        state.totalCount = state.data.length;
         
         // Adjust current page if needed
         const totalPages = Math.ceil(state.totalCount / state.rowsPerPage);
@@ -178,7 +231,7 @@ const eserviceSlice = createSlice({
           state.currentPage = totalPages;
         }
       })
-      .addCase(deleteRequest.rejected, (state, action) => {
+      .addCase(deleteEService.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
@@ -186,10 +239,11 @@ const eserviceSlice = createSlice({
 });
 
 export const { 
-  clearEserviceError, 
-  setFilters, 
-  clearFilters,
-  setCurrentPage,
-  setRowsPerPage
+  clearEServiceError, 
+  setCurrentPage, 
+  setRowsPerPage,
+  setFilters,
+  clearEServiceData,
+  clearFormData
 } = eserviceSlice.actions;
 export default eserviceSlice.reducer;

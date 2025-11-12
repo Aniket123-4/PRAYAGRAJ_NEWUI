@@ -30,6 +30,8 @@ import Magazine from "../pages/Magazine";
 import PandulipiSanskriti from "../pages/PandulipiSanskriti";
 import OldBoundNewspapers from "../pages/OldBoundNewspapers";
 import NewspapersAvailability from "../pages/NewspapersAvailability";
+import EServiceAdmin from "@/pages/AdminPages/EServiceAdmin";
+import MembershipAdmin from "@/pages/AdminPages/MembershipAdmin";
 
 const AppRoutes = () => {
   return (
@@ -86,10 +88,18 @@ const AppRoutes = () => {
             } 
           />
           <Route 
-            path="admin/blogs" 
+            path="admin/eservices" 
             element={
               <ProtectedRoute>
-                <BlogForm />
+                <EServiceAdmin  />
+              </ProtectedRoute>
+            } 
+          />
+            <Route 
+            path="admin/membership" 
+            element={
+              <ProtectedRoute>
+                <MembershipAdmin  />
               </ProtectedRoute>
             } 
           />

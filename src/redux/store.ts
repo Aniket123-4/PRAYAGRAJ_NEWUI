@@ -11,6 +11,7 @@ import galleryReducer from "./slices/gallerySlice";
 import collectionReducer from "./slices/collectionSlice"
 import aboutReducer from "./slices/aboutSlice"
 import eserviceReducer from "./slices/eserviceSlice"
+import membershipReducer from "./slices/membershipSlice";
 export const store = configureStore({
   reducer: {
     auth: authSlice,
@@ -25,6 +26,7 @@ export const store = configureStore({
     collection:collectionReducer,
     about:aboutReducer,
     eservice:eserviceReducer,
+    membership:membershipReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

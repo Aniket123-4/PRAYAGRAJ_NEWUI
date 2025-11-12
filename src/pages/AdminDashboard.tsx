@@ -335,23 +335,23 @@ const AdminDashboard: React.FC = () => {
     },
   ];
 
-  const quickActions = [
-    { icon: Image, label: 'Upload Images', path: '/admin/gallery', color: 'from-purple-500 to-pink-500' },
-    { icon: Edit3, label: 'Blogs Entry', path: '/admin/blogs', color: 'from-blue-500 to-cyan-500' },
-    { icon: Info, label: 'About Us', path: '/admin/about', color: 'from-green-500 to-emerald-500' },
-    { icon: FolderOpen, label: 'Collection', path: '/admin/collection', color: 'from-orange-500 to-red-500' },
-    { icon: ScrollText, label: 'Manuscript', path: '/admin/manuscript', color: 'from-indigo-500 to-blue-500' },
-    { icon: History, label: 'Edit History', path: '/admin/history', color: 'from-amber-500 to-yellow-500' },
-  ];
+ const quickActions = [
+  { icon: Image, label: 'Upload Images', path: '/admin/gallery', color: 'from-purple-500 to-pink-500' },
+   { icon: ScrollText, label: 'Membership', path: '/admin/membership', color: 'from-yellow-500 to-pink-500' },
+  { icon: Edit3, label: 'E-Service', path: '/admin/eservices', color: 'from-red-500 to-cyan-500' }, // Changed from 'Blogs Entry'
+  { icon: Info, label: 'About Us', path: '/admin/about', color: 'from-green-500 to-emerald-500' },
+  { icon: FolderOpen, label: 'Collection', path: '/admin/collection', color: 'from-orange-500 to-red-500' },
+  { icon: ScrollText, label: 'Manuscript', path: '/admin/manuscript', color: 'from-indigo-500 to-blue-500' },
+  { icon: History, label: 'Edit History', path: '/admin/history', color: 'from-amber-500 to-yellow-500' },
+];
 
   const recentActivities = [
-    { action: 'New member registered', time: '2 min ago', type: 'success' },
-    { action: 'Book checked out', time: '15 min ago', type: 'info' },
-    { action: 'System backup completed', time: '1 hour ago', type: 'success' },
-    { action: 'New blog post added', time: '2 hours ago', type: 'warning' },
-    { action: 'Archive updated', time: '3 hours ago', type: 'info' },
-  ];
-
+  { action: 'New member registered', time: '2 min ago', type: 'success' },
+  { action: 'E-Service request submitted', time: '15 min ago', type: 'info' }, // Changed from 'Book checked out'
+  { action: 'System backup completed', time: '1 hour ago', type: 'success' },
+  { action: 'E-Service request approved', time: '2 hours ago', type: 'warning' }, // Changed from 'New blog post added'
+  { action: 'Archive updated', time: '3 hours ago', type: 'info' },
+];
   const statsVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
@@ -572,7 +572,7 @@ const AdminDashboard: React.FC = () => {
           </div>
           
           <motion.div 
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 lg:gap-4"
             initial="hidden"
             animate="visible"
           >
