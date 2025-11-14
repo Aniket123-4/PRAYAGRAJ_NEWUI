@@ -1430,5 +1430,97 @@
     "search": "Search..."
 
     
+  },
+    "membership": {
+    "title": "Library Membership",
+    "subtitle": "Join our prestigious library community and unlock access to vast knowledge resources",
+    "benefits": {
+      "title": "Membership Benefits",
+      "subtitle": "Unlock exclusive privileges and access to our vast collection",
+      "books": "2,50,000+ Books",
+      "booksDescription": "Access to vast collection",
+      "members": "{{count}}+ Members",
+      "membersDescription": "Join our community",
+      "digitalArchives": "Digital Archives",
+      "digitalArchivesDescription": "Rare documents access",
+      "extendedHours": "Extended Hours",
+      "extendedHoursDescription": "Flexible reading time",
+      "premiumAccess": "Premium Access",
+      "premiumAccessDescription": "Special collections",
+      "communityEvents": "Community Events",
+      "communityEventsDescription": "Workshops & seminars"
+    },
+    "deposit": {
+      "title": "Security Deposit Options",
+      "basic": {
+        "amount": "500",
+        "books": "2",
+        "description": "Basic membership for occasional readers"
+      },
+      "standard": {
+        "amount": "1000",
+        "books": "4",
+        "description": "Standard membership for regular readers"
+      },
+      "premium": {
+        "amount": "2000",
+        "books": "6",
+        "description": "Premium membership for avid readers"
+      },
+      "maxBooks": "Max Books: {{count}}",
+      "choosePlan": "Choose Plan"
+    },
+    "rules": {
+      "borrower": {
+        "title": "Borrower Rules & Regulations"
+      },
+      "library": {
+        "title": "Library Rules & Regulations"
+      }
+    },
+    "sidebar": {
+      "readyToJoin": "Ready to Join?",
+      "startJourney": "Start your membership journey today",
+      "applyOnline": "Apply Online",
+      "downloadForm": "Download Form",
+      "visitLibrary": "or visit library for offline registration",
+      "contactInfo": "Contact Information",
+      "libraryHours": "Library Hours:",
+      "hours": "9:00 AM - 6:00 PM",
+      "contact": "Contact:",
+      "phone": "+91-XXXX-XXXXXX",
+      "email": "Email:",
+      "emailAddress": "library@prayagraj.gov.in",
+      "requiredDocuments": "Required Documents",
+      "identityProof": "Identity Proof (Aadhar, Voter ID, etc.)",
+      "addressProof": "Address Proof",
+      "photos": "Passport Size Photos (2)"
+    },
+    "cta": {
+      "title": "Ready to Become a Member?",
+      "description": "Join {{count}}+ readers in our prestigious library community",
+      "applyMembership": "Apply for Membership",
+      "contactUs": "Contact Us"
+    },
+    "registration": {
+      "title": "Membership Registration",
+      "description": "Fill out the form below to apply for library membership",
+      "fullName": "Full Name *",
+      "enterFullName": "Enter your full name",
+      "email": "Email *",
+      "enterEmail": "Enter your email",
+      "phone": "Phone Number *",
+      "enterPhone": "Enter your phone number",
+      "membershipType": "Membership Type *",
+      "deposit500": "₹500 Deposit (2 Books)",
+      "deposit1000": "₹1000 Deposit (4 Books)",
+      "deposit2000": "₹2000 Deposit (6 Books)",
+      "address": "Address *",
+      "enterAddress": "Enter your complete address",
+      "cancel": "Cancel",
+      "submit": "Submit Application",
+      "submitting": "Submitting...",
+      "success": "Registration submitted successfully! We will contact you soon."
+    }
   }
 }
