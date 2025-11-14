@@ -1,22 +1,17 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Menu, 
   X, 
   Search, 
-  Moon, 
-  Sun, 
   BookOpen,
   Archive,
   Users,
   FileText,
   ScrollText,
-  Building2,
   Globe,
   Type,
-  UserCheck,
   LayoutDashboard,
   Computer,
   GalleryThumbnails,
@@ -29,7 +24,7 @@ import {
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from '../utils/translations';
+import { useTranslation } from "react-i18next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const Navbar: React.FC = () => {
@@ -38,56 +33,66 @@ const Navbar: React.FC = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const location = useLocation();
-  const { theme, setTheme, language, setLanguage, fontSize, setFontSize } = useTheme();
-  const t = useTranslation(language);
+  const { theme, setTheme, fontSize, setFontSize } = useTheme();
+  
+  // Use i18n hook properly - destructure t and i18n
+  const { t, i18n } = useTranslation();
+
+  // State to track current language from i18n
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
+  // Sync language when i18n changes
+  useEffect(() => {
+    setCurrentLanguage(i18n.language);
+  }, [i18n.language]);
 
   const navItems = [
     { 
-      name: 'Home', 
+      name: t('nav.home', 'Home'), 
       path: '/', 
       icon: LayoutDashboard,
       type: 'link'
     },
     { 
-      name: 'Membership', 
+      name: t('nav.membership', 'Membership'), 
       path: '/membership', 
       icon: Users,
       type: 'link'
     },
     { 
-      name: 'Services', 
+      name: t('nav.services', 'Services'), 
       path: '#',
       icon: BookOpen,
       type: 'dropdown',
       children: [
-        { name: 'Services', path: '/services/services', icon: BookOpen },
-        { name: 'E-services', path: '/services/e-services', icon: Computer }
+        { name: t('nav.services', 'Services'), path: '/services/services', icon: BookOpen },
+        { name: t('nav.eServices', 'E-services'), path: '/services/e-services', icon: Computer }
       ]
     },
     { 
-      name: 'Archive', 
+      name: t('nav.archive', 'Archive'), 
       path: '#',
       icon: Archive,
       type: 'dropdown',
       children: [
-        { name: 'Gallery', path: '/archives/gallery', icon: GalleryThumbnails },
-        { name: 'History', path: '/archives/history', icon: History }
+        { name: t('nav.gallery', 'Gallery'), path: '/archives/gallery', icon: GalleryThumbnails },
+        { name: t('nav.history', 'History'), path: '/archives/history', icon: History }
       ]
     },
     { 
-      name: 'Collection', 
+      name: t('nav.collection', 'Collection'), 
       path: '/collection', 
       icon: ScrollText,
       type: 'link'
     },
     { 
-      name: 'Manuscript', 
+      name: t('nav.manuscript', 'Manuscript'), 
       path: '/manuscript', 
       icon: BookMarked,
       type: 'link'
     },
     { 
-      name: 'About', 
+      name: t('nav.about', 'About'), 
       path: '/about', 
       icon: FileText,
       type: 'link'
@@ -110,12 +115,14 @@ const Navbar: React.FC = () => {
     setShowSettingsDropdown(!showSettingsDropdown);
   };
 
+  // Use i18n.changeLanguage instead of custom function
   const handleLanguageChange = (lang: string) => {
-    setLanguage(lang);
+    i18n.changeLanguage(lang);
     setShowSettingsDropdown(false);
   };
 
   const handleFontSizeChange = (size: string) => {
+    //@ts-ignore
     setFontSize(size);
     setShowSettingsDropdown(false);
   };
@@ -140,7 +147,7 @@ const Navbar: React.FC = () => {
               <BookOpen className="h-6 w-6 text-white" />
             </div>
             <div className="hidden sm:block">
-              <p className="text-xs text-muted-foreground -mt-1">Prayagraj Public Library</p>
+              <p className="text-xs text-muted-foreground -mt-1">{t('nav.libraryName', 'Prayagraj Public Library')}</p>
             </div>
           </Link>
 
@@ -210,9 +217,9 @@ const Navbar: React.FC = () => {
             ))}
           </div>
 
-          {/* Right side controls - Compact Version */}
+          {/* Right side controls */}
           <div className="flex items-center space-x-2">
-            {/* Login Button - Changed to Link */}
+            {/* Login Button */}
             <Link to="/login">
               <Button
                 variant="ghost"
@@ -220,12 +227,11 @@ const Navbar: React.FC = () => {
                 className="hover:bg-background-secondary whitespace-nowrap"
               >
                 <LogIn className="h-4 w-4 mr-1" />
-                <span className="text-sm hidden sm:inline">Login</span>
+                <span className="text-sm hidden sm:inline">{t('nav.login', 'Login')}</span>
               </Button>
             </Link>
 
-            {/* Settings Dropdown */
-            }
+            {/* Settings Dropdown */}
             <div className="relative">
               <Button
                 variant="ghost"
@@ -248,25 +254,25 @@ const Navbar: React.FC = () => {
                   {/* Language Selection */}
                   <div className="p-3 border-b border-border">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Language</span>
+                      <span className="text-sm font-medium">{t('nav.language', 'Language')}</span>
                       <Globe className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div className="flex space-x-2">
                       <Button
-                        variant={language === 'en' ? 'default' : 'outline'}
+                        variant={currentLanguage === 'en' ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => handleLanguageChange('en')}
                         className="flex-1 text-xs"
                       >
-                        English
+                        {t('nav.english', 'English')}
                       </Button>
                       <Button
-                        variant={language === 'hi' ? 'default' : 'outline'}
+                        variant={currentLanguage === 'hi' ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => handleLanguageChange('hi')}
                         className="flex-1 text-xs"
                       >
-                        हिंदी
+                        {t('nav.hindi', 'हिंदी')}
                       </Button>
                     </div>
                   </div>
@@ -274,7 +280,7 @@ const Navbar: React.FC = () => {
                   {/* Font Size */}
                   <div className="p-3 border-b border-border">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Font Size</span>
+                      <span className="text-sm font-medium">{t('nav.fontSize', 'Font Size')}</span>
                       <Type className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div className="flex space-x-2">
@@ -286,7 +292,9 @@ const Navbar: React.FC = () => {
                           onClick={() => handleFontSizeChange(size)}
                           className="flex-1 text-xs"
                         >
-                          {size === 'small' ? 'S' : size === 'medium' ? 'M' : 'L'}
+                          {size === 'small' ? t('nav.small', 'S') : 
+                           size === 'medium' ? t('nav.medium', 'M') : 
+                           t('nav.large', 'L')}
                         </Button>
                       ))}
                     </div>
@@ -295,17 +303,17 @@ const Navbar: React.FC = () => {
                   {/* Theme Selection */}
                   <div className="p-3">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Theme</span>
+                      <span className="text-sm font-medium">{t('nav.theme', 'Theme')}</span>
                     </div>
-                    <Select value={theme} onValueChange={(v) => handleThemeChange(v)}>
+                    <Select value={theme} onValueChange={handleThemeChange}>
                       <SelectTrigger className="w-full h-9">
-                        <SelectValue placeholder="Select theme" />
+                        <SelectValue placeholder={t('nav.selectTheme', 'Select theme')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="bhagwa">Bhagwa (Default)</SelectItem>
-                        <SelectItem value="ocean">Ocean</SelectItem>
-                        <SelectItem value="forest">Forest</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="bhagwa">{t('nav.bhagwa', 'Bhagwa (Default)')}</SelectItem>
+                        <SelectItem value="ocean">{t('nav.ocean', 'Ocean')}</SelectItem>
+                        <SelectItem value="forest">{t('nav.forest', 'Forest')}</SelectItem>
+                        <SelectItem value="dark">{t('nav.dark', 'Dark')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -338,7 +346,7 @@ const Navbar: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={t('nav.search', 'Search...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 w-full bg-background-secondary"
@@ -426,13 +434,13 @@ const Navbar: React.FC = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setLanguage(language === 'en' ? 'hi' : 'en');
+                    handleLanguageChange(currentLanguage === 'en' ? 'hi' : 'en');
                     setIsOpen(false);
                   }}
                   className="justify-center"
                 >
                   <Globe className="h-4 w-4 mr-1" />
-                  {language === 'en' ? 'हिंदी' : 'English'}
+                  {currentLanguage === 'en' ? t('nav.hindi', 'हिंदी') : t('nav.english', 'English')}
                 </Button>
                 
                 <Button
@@ -445,22 +453,24 @@ const Navbar: React.FC = () => {
                   className="justify-center"
                 >
                   <Type className="h-4 w-4 mr-1" />
-                  Font: {fontSize === 'small' ? 'S' : fontSize === 'medium' ? 'M' : 'L'}
+                  {t('nav.font', 'Font')}: {fontSize === 'small' ? t('nav.small', 'S') : 
+                                         fontSize === 'medium' ? t('nav.medium', 'M') : 
+                                         t('nav.large', 'L')}
                 </Button>
               </div>
               
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs text-muted-foreground">Theme</label>
-                  <Select value={theme} onValueChange={(v) => setTheme(v as any)}>
+                  <label className="text-xs text-muted-foreground">{t('nav.theme', 'Theme')}</label>
+                  <Select value={theme} onValueChange={handleThemeChange}>
                     <SelectTrigger className="w-full mt-1">
-                      <SelectValue placeholder="Select theme" />
+                      <SelectValue placeholder={t('nav.selectTheme', 'Select theme')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="bhagwa">Bhagwa (Default)</SelectItem>
-                      <SelectItem value="ocean">Ocean</SelectItem>
-                      <SelectItem value="forest">Forest</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
+                      <SelectItem value="bhagwa">{t('nav.bhagwa', 'Bhagwa (Default)')}</SelectItem>
+                      <SelectItem value="ocean">{t('nav.ocean', 'Ocean')}</SelectItem>
+                      <SelectItem value="forest">{t('nav.forest', 'Forest')}</SelectItem>
+                      <SelectItem value="dark">{t('nav.dark', 'Dark')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -473,7 +483,7 @@ const Navbar: React.FC = () => {
                     className="justify-center w-full"
                   >
                     <LogIn className="h-4 w-4 mr-1" />
-                    Login
+                    {t('nav.login', 'Login')}
                   </Button>
                 </Link>
               </div>

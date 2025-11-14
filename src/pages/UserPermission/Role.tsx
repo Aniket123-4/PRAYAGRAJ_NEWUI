@@ -3,8 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   fetchRoles,
   fetchRoleDetails,
-  createRole,
-  updateRole,
+  saveRole,
   deleteRole,
   clearCurrentRole,
 } from "../../redux/slices/roleSlice";
@@ -24,45 +23,48 @@ import { useTranslation } from "react-i18next";
 import { FaSave } from "react-icons/fa";
 
 type PermissionKey =
-  | "IsAdd"
-  | "IsEdit"
-  | "IsDel"
-  | "IsView"
-  | "IsPrint"
-  | "IsExport"
-  | "IsRelease"
-  | "IsPost";
+  | "isAdd"
+  | "isEdit"
+  | "isDel"
+  | "isView"
+  | "isPrint"
+  | "isExport"
+  | "isRelease"
+  | "isPost";
 
 interface MenuPermission {
-  menuId: number;
-  parentId: number;
-  IsAdd: boolean;
-  IsEdit: boolean;
-  IsDel: boolean;
-  IsView: boolean;
-  IsPrint: boolean;
-  IsExport: boolean;
-  IsRelease: boolean;
-  IsPost: boolean;
+  menuId: string;
+  parentId?: string;
+  isAdd: boolean;
+  isEdit: boolean;
+  isDel: boolean;
+  isView: boolean;
+  isPrint: boolean;
+  isExport: boolean;
+  isRelease: boolean;
+  isPost: boolean;
 }
 
 const RolePage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { roles, currentRole } = useAppSelector((state) => state.role);
+  const { roles, currentRole, loading } = useAppSelector((state) => state.role);
   const { menus } = useAppSelector((state) => state.menu);
 
   const [roleName, setRoleName] = useState("");
   const [roleNameError, setRoleNameError] = useState("");
   const [permissions, setPermissions] = useState<MenuPermission[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const { theme } = useTheme();
   const th = tc(theme);
   const { t } = useTranslation();
 
   const modalRef = useRef<HTMLDivElement | null>(null);
+
+  // You need to get the actual logged-in user's ID from your auth context
+  const currentUserId = "65d8f1a9e4b0c9a8b8c7d6e5"; // Replace with actual user ID from auth context
 
   /* ---------- effects ---------- */
   useEffect(() => {
@@ -73,14 +75,27 @@ const RolePage: React.FC = () => {
   useEffect(() => {
     if (!isModalOpen) return;
 
-    if (currentRole) {
-      setRoleName(currentRole.RoleName);
-      setEditingId(currentRole.RoleID);
-      buildPermissions(currentRole.permissions || []);
+    if (currentRole && currentRole.permissions) {
+      setRoleName(currentRole.roleName);
+      setEditingId(currentRole._id);
+      // Wait a bit to ensure menus are loaded before building permissions
+      if (menus.length > 0) {
+        buildPermissions(currentRole.permissions);
+      }
     } else {
       setRoleName("");
       setEditingId(null);
-      buildPermissions([]);
+      // Only build empty permissions when menus are available
+      if (menus.length > 0) {
+        buildPermissions([]);
+      }
+    }
+  }, [currentRole, menus, isModalOpen]);
+
+  // Additional effect to handle when currentRole loads after menus
+  useEffect(() => {
+    if (isModalOpen && currentRole && currentRole.permissions && menus.length > 0) {
+      buildPermissions(currentRole.permissions);
     }
   }, [currentRole, menus, isModalOpen]);
 
@@ -104,32 +119,51 @@ const RolePage: React.FC = () => {
   }, [isModalOpen]);
 
   /* ---------- helpers ---------- */
-  const buildPermissions = (existing: any[] = []) => {
-    if (!menus.length) return;
+/* ---------- helpers ---------- */
+const buildPermissions = (existing: any[] = []) => {
+  if (!menus.length) {
+    console.log("No menus available to build permissions");
+    return;
+  }
 
-    const built = menus.map((m) => {
-      const found = existing.find((p) => p.MenuId === m.MenuId);
-      return {
-        menuId: m.MenuId,
-        parentId: m.ParentId || 0,
-        IsAdd: found?.IsAdd || false,
-        IsEdit: found?.IsEdit || false,
-        IsDel: found?.IsDel || false,
-        IsView: found?.IsView || false,
-        IsPrint: found?.IsPrint || false,
-        IsExport: found?.IsExport || false,
-        IsRelease: found?.IsRelease || false,
-        IsPost: found?.IsPost || false,
-      };
+  console.log("Building permissions with existing:", existing);
+  console.log("Available menus:", menus);
+
+  const built = menus.map((m) => {
+    // Try to find existing permission for this menu
+    const found = existing.find((p) => {
+      // Handle both cases: menuId as string or menuId as object with _id
+      const permissionMenuId = p.menuId?._id || p.menuId;
+      return permissionMenuId === m.MenuId || permissionMenuId?.toString() === m.MenuId;
     });
-    setPermissions(built);
-  };
+    
+    console.log(`Menu ${m.MenuId} - ${m.MenuName}, found permission:`, found);
+
+    return {
+      menuId: m.MenuId,
+      parentId: m.ParentId?.toString() || undefined,
+      isAdd: found?.isAdd || found?.IsAdd || false,
+      isEdit: found?.isEdit || found?.IsEdit || false,
+      isDel: found?.isDel || found?.IsDel || false,
+      isView: found?.isView || found?.IsView || false,
+      isPrint: found?.isPrint || found?.IsPrint || false,
+      isExport: found?.isExport || found?.IsExport || false,
+      isRelease: found?.isRelease || found?.IsRelease || false,
+      isPost: found?.isPost || found?.IsPost || false,
+    };
+  });
+  
+  console.log("Built permissions:", built);
+  setPermissions(built);
+};
 
   /* ---------- handlers ---------- */
   const openModal = (role?: any) => {
     if (role) {
-      dispatch(fetchRoleDetails(role.RoleID));
+      console.log("Opening modal for editing role:", role);
+      dispatch(fetchRoleDetails(role._id || role.id));
     } else {
+      console.log("Opening modal for new role");
       dispatch(clearCurrentRole());
     }
     setIsModalOpen(true);
@@ -148,7 +182,7 @@ const RolePage: React.FC = () => {
     setPermissions((prev) => prev.map((p) => ({ ...p, [key]: !current })));
   };
 
-  const handleToggle = (menuId: number, key: PermissionKey) => {
+  const handleToggle = (menuId: string, key: PermissionKey) => {
     setPermissions((prev) =>
       prev.map((p) => (p.menuId === menuId ? { ...p, [key]: !p[key] } : p))
     );
@@ -166,32 +200,19 @@ const RolePage: React.FC = () => {
     if (!validate()) return;
 
     const payload = {
+      id: editingId || undefined,
       roleName,
-      rolePermission: permissions.map((p) => ({
-        menuId: p.menuId,
-        parentId: p.parentId,
-        isAdd: p.IsAdd,
-        isEdit: p.IsEdit,
-        isDel: p.IsDel,
-        isView: p.IsView,
-        isPrint: p.IsPrint,
-        isExport: p.IsExport,
-        isRelease: p.IsRelease,
-        isPost: p.IsPost,
-      })),
-      user_ID: "20",
-      createdDt: new Date().toISOString(),
-      modifyDt: new Date().toISOString(),
+      permissions: permissions,
+      userId: currentUserId,
     };
 
     try {
-      if (editingId) {
-        await dispatch(updateRole({ ...payload, roleId: editingId })).unwrap();
-        toast.success(t("text.updateToast", { key: t("text.role") }));
-      } else {
-        await dispatch(createRole(payload)).unwrap();
-        toast.success(t("text.createToast", { key: t("text.role") }));
-      }
+      await dispatch(saveRole(payload)).unwrap();
+      toast.success(
+        editingId 
+          ? t("text.updateToast", { key: t("text.role") })
+          : t("text.createToast", { key: t("text.role") })
+      );
       closeModal();
       dispatch(fetchRoles());
     } catch (e: any) {
@@ -213,6 +234,13 @@ const RolePage: React.FC = () => {
     }
   };
 
+  // Prepare data for DataGrid with proper ID mapping
+  const gridData = roles.map((role: any) => ({
+    ...role,
+    id: role._id,
+    RoleName: role.roleName,
+  }));
+
   /* ---------- render ---------- */
   return (
     <div
@@ -227,19 +255,6 @@ const RolePage: React.FC = () => {
             {t("text.roleManagement")}
           </h1>
         </div>
-        {/* <div className="flex items-center gap-2">
-          <div className="mr-4 mt-1">
-            <Helpdesk menuId={25} />
-          </div>
-          <div className="mr-4">
-            <Button
-              icon={<FiPlus />}
-              text={t("text.add")}
-              onClick={() => openModal()}
-              bgColor={theme === "dark" ? "bg-blue-700" : "bg-blue-900"}
-            />
-          </div>
-        </div> */}
         <div className="flex gap-2 w-full sm:w-auto">
           <div className="w-1/2 sm:w-auto">
             <Helpdesk menuId={25} />
@@ -251,18 +266,18 @@ const RolePage: React.FC = () => {
               onClick={() => openModal()}
               bgColor={`${th.button.primary}`}
               className="w-full sm:w-auto"
+              disabled={loading}
             />
           </div>
         </div>
       </div>
+      
       <DataGrid
-        // @ts-ignore
         columns={[{ key: "RoleName", header: t("text.roleName") }]}
-        // @ts-ignore
-        data={roles}
+        data={gridData}
         actions={[
           { label: "Edit", onClick: (row) => openModal(row) },
-          { label: "Delete", onClick: (row: any) => setDeleteId(row.RoleID) },
+          { label: "Delete", onClick: (row: any) => setDeleteId(row.id) },
         ]}
       />
 
@@ -306,95 +321,103 @@ const RolePage: React.FC = () => {
                 <h3 className={`text-lg font-medium mb-2 ${th.text}`}>
                   {t("text.permissions")}
                 </h3>
-                <div className="overflow-auto">
-                  <table className={`min-w-full border ${th.border}`}>
-                    <thead>
-                      <tr>
-                        <th
-                          className={`px-4 py-2 text-left border ${th.border}`}
-                        >
-                          {t("text.menuName")}
-                        </th>
-                        {(
-                          [
-                            "Add",
-                            "Edit",
-                            "Del",
-                            "View",
-                            "Print",
-                            "Export",
-                            "Release",
-                            "Post",
-                          ] as const
-                        ).map((perm) => {
-                          const key = `Is${perm}` as PermissionKey;
-                          const all =
-                            permissions.length &&
-                            permissions.every((p) => p[key]);
-                          return (
-                            <th
-                              key={perm}
-                              className={`px-2 py-2 border text-center ${th.border}`}
-                            >
-                              <div className="flex flex-col items-center">
-                                <span>{perm}</span>
-                                <input
-                                  type="checkbox"
-                                  //@ts-ignore
-                                  checked={all}
-                                  onChange={() => handleSelectAll(key)}
-                                />
-                              </div>
-                            </th>
-                          );
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {menus.map((menu) => {
-                        const perm = permissions.find(
-                          (p) => p.menuId === menu.MenuId
-                        );
-                        if (!perm) return null;
-                        return (
-                          <tr key={menu.MenuId} className={th.tableRow}>
-                            <td className={`px-4 py-2 border ${th.border}`}>
-                              {menu.MenuName}
-                            </td>
-                            {(
-                              [
-                                "Add",
-                                "Edit",
-                                "Del",
-                                "View",
-                                "Print",
-                                "Export",
-                                "Release",
-                                "Post",
-                              ] as const
-                            ).map((p) => {
-                              const key = `Is${p}` as PermissionKey;
-                              return (
-                                <td
-                                  key={p}
-                                  className={`px-2 py-2 border text-center ${th.border}`}
-                                >
+                {loading && (
+                  <div className="text-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
+                    <p className="mt-2">Loading permissions...</p>
+                  </div>
+                )}
+                {!loading && (
+                  <div className="overflow-auto">
+                    <table className={`min-w-full border ${th.border}`}>
+                      <thead>
+                        <tr>
+                          <th
+                            className={`px-4 py-2 text-left border ${th.border}`}
+                          >
+                            {t("text.menuName")}
+                          </th>
+                          {(
+                            [
+                              "Add",
+                              "Edit",
+                              "Del",
+                              "View",
+                              "Print",
+                              "Export",
+                              "Release",
+                              "Post",
+                            ] as const
+                          ).map((perm) => {
+                            const key = `is${perm}` as PermissionKey;
+                            const all =
+                              permissions.length > 0 &&
+                              permissions.every((p) => p[key]);
+                            return (
+                              <th
+                                key={perm}
+                                className={`px-2 py-2 border text-center ${th.border}`}
+                              >
+                                <div className="flex flex-col items-center">
+                                  <span>{perm}</span>
                                   <input
                                     type="checkbox"
-                                    checked={perm[key]}
-                                    onChange={() =>
-                                      handleToggle(menu.MenuId, key)
-                                    }
+                                    checked={all}
+                                    onChange={() => handleSelectAll(key)}
+                                    disabled={permissions.length === 0}
                                   />
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                                </div>
+                              </th>
+                            );
+                          })}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {menus.map((menu) => {
+                          const perm = permissions.find(
+                            (p) => p.menuId === menu.MenuId
+                          );
+                          if (!perm) return null;
+                          return (
+                            <tr key={menu.MenuId} className={th.tableRow}>
+                              <td className={`px-4 py-2 border ${th.border}`}>
+                                {menu.MenuName}
+                              </td>
+                              {(
+                                [
+                                  "Add",
+                                  "Edit",
+                                  "Del",
+                                  "View",
+                                  "Print",
+                                  "Export",
+                                  "Release",
+                                  "Post",
+                                ] as const
+                              ).map((p) => {
+                                const key = `is${p}` as PermissionKey;
+                                return (
+                                  <td
+                                    key={p}
+                                    className={`px-2 py-2 border text-center ${th.border}`}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={perm[key]}
+                                      onChange={() =>
+                                        handleToggle(menu.MenuId, key)
+                                      }
+                                    />
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end gap-2">
@@ -403,12 +426,14 @@ const RolePage: React.FC = () => {
                   text={t("text.cancel")}
                   onClick={closeModal}
                   bgColor={theme === "dark" ? "bg-red-700" : "bg-red-600"}
+                  disabled={loading}
                 />
                 <Button
                   icon={editingId ? <FiEdit /> : <FaSave />}
                   text={editingId ? t("text.update") : t("text.save")}
                   onClick={handleSubmit}
                   bgColor={`${th.button.primary}`}
+                  disabled={loading || permissions.length === 0}
                 />
               </div>
             </div>

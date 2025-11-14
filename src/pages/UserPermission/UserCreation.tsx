@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { fetchUsers, deleteUser } from "../../redux/slices/userSlice";
+import { getUsers, deleteUser } from "../../redux/slices/userSlice";
 import DataGrid from "../../components/common/DataGrid";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -21,11 +21,11 @@ const UserCreation: React.FC = () => {
   const permission = usePermissionByMenuName("User Creation");
   const { theme } = useTheme();
   const th = tc(theme);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(getUsers());
   }, [dispatch]);
 
   const handleAdd = () => {
@@ -33,7 +33,7 @@ const UserCreation: React.FC = () => {
   };
 
   const handleEdit = (row: any) => {
-    navigate(`/usermanagement/usercreation/edit/${row.USER_ID}`);
+    navigate(`/usermanagement/usercreation/edit/${row._id}`);
   };
 
   const handleDelete = async () => {
@@ -42,7 +42,7 @@ const UserCreation: React.FC = () => {
         await dispatch(deleteUser(deleteId)).unwrap();
         toast.success(t("text.deleteToast", { key: t("text.user") }));
         setDeleteId(null);
-        dispatch(fetchUsers());
+        dispatch(getUsers());
       } catch (error) {
         toast.error(t("text.deleteAError", { key: t("text.user") }));
       }
@@ -50,14 +50,10 @@ const UserCreation: React.FC = () => {
   };
 
   return (
-    <div
-      className={`w-full px-4 py-6 transition-colors ${th.background} ${th.text}`}
-    >
+    <div className={`w-full px-4 py-6 transition-colors ${th.background} ${th.text}`}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 px-1">
         <div>
-          <h1
-            className={`text-2xl font-bold mb-4 flex items-center gap-2 ${th.text}`}
-          >
+          <h1 className={`text-2xl font-bold mb-4 flex items-center gap-2 ${th.text}`}>
             <FaUserPlus className="text-indigo-600 w-6 h-6" />{" "}
             {t("text.userManagement")}
           </h1>
@@ -77,55 +73,31 @@ const UserCreation: React.FC = () => {
           </div>
         </div>
       </div>
+      
       <DataGrid
         columns={[
-          { key: "LOGIN_NAME", header: t("text.loginName") },
-          { key: "FIRST_NAME", header: t("text.firstName") },
-          { key: "EMAIL", header: t("text.email") },
-          { key: "CUR_MOBILE", header: t("text.contactNo") },
-          { key: "RoleName", header: t("text.role") },
-          { key: "Source", header: t("text.source") },
+          { key: "loginName", header: t("text.loginName") },
+          { key: "firstName", header: t("text.firstName") },
+          { key: "surName", header: t("text.surname") },
+          { key: "email", header: t("text.email") },
+          { key: "curMobile", header: t("text.contactNo") },
+          { 
+            key: "isActive", 
+            header: t("text.status"),
+            render: (value: boolean) => value ? "Active" : "Inactive"
+          },
         ]}
         data={users}
-        // @ts-ignore
         loading={loading}
-        // actions={[
-        //   ...(permission?.isEdit
-        //     ? [{ label: "Edit", onClick: handleEdit }]
-        //     : []),
-        //   ...(permission?.isDel
-        //     ? [
-        //         {
-        //           label: "Delete",
-        //           onClick: (row: any) => setDeleteId(row.USER_ID),
-        //         },
-        //       ]
-        //     : []),
-        // ]}
         actions={[
           ...(permission?.isEdit
-            ? [
-                {
-                  label: "edit",
-                  onClick: (row: any) => {
-                    if (row.Source !== "Public") {
-                      handleEdit(row);
-                    }
-                  },
-                },
-              ]
+            ? [{ label: "edit", onClick: handleEdit }]
             : []),
           ...(permission?.isDel
-            ? [
-                {
-                  label: "delete",
-                  onClick: (row: any) => {
-                    if (row.Source !== "Public") {
-                      setDeleteId(row.USER_ID);
-                    }
-                  },
-                },
-              ]
+            ? [{
+                label: "delete",
+                onClick: (row: any) => setDeleteId(row._id),
+              }]
             : []),
         ]}
       />

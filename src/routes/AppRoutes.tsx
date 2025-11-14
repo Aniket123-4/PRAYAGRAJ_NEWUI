@@ -32,6 +32,15 @@ import OldBoundNewspapers from "../pages/OldBoundNewspapers";
 import NewspapersAvailability from "../pages/NewspapersAvailability";
 import EServiceAdmin from "@/pages/AdminPages/EServiceAdmin";
 import MembershipAdmin from "@/pages/AdminPages/MembershipAdmin";
+import GenderPage from "@/pages/UserPermission/GenderPage";
+import UserPermission from "@/pages/UserPermission/UserPermission";
+import RolePage from "@/pages/UserPermission/Role";
+import UserCreation from "@/pages/UserPermission/UserCreation";
+import UserTypePage from "@/pages/UserPermission/UserTypePage";
+import MenuPage from "@/pages/UserPermission/MenuPage";
+import UserCreationAdd from "@/pages/UserPermission/UserCreationAdd";
+import UserCreationEdit from "@/pages/UserPermission/UserCreationEdit";
+
 
 const AppRoutes = () => {
   return (
@@ -42,7 +51,7 @@ const AppRoutes = () => {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="login" element={<LoginPage />} />
-          
+
           {/* Public Routes */}
           <Route path="services/services" element={<Services />} />
           <Route path="services/e-services" element={<EServices />} />
@@ -63,70 +72,140 @@ const AppRoutes = () => {
           <Route path="newspapers-availability" element={<NewspapersAvailability />} />
 
           {/* 🔐 PROTECTED ADMIN ROUTES */}
-          <Route 
-            path="admin" 
+          <Route
+            path="admin"
             element={
               <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="admin/about" 
+          <Route
+            path="admin/about"
             element={
               <ProtectedRoute>
                 <AboutUsForm />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="admin/collection" 
+          <Route
+            path="admin/collection"
             element={
               <ProtectedRoute>
                 <CollectionForm />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="admin/eservices" 
+          <Route
+            path="admin/eservices"
             element={
               <ProtectedRoute>
-                <EServiceAdmin  />
+                <EServiceAdmin />
               </ProtectedRoute>
-            } 
+            }
           />
-            <Route 
-            path="admin/membership" 
+          <Route
+            path="admin/membership"
             element={
               <ProtectedRoute>
-                <MembershipAdmin  />
+                <MembershipAdmin />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="admin/gallery" 
+          <Route
+            path="admin/gallery"
             element={
               <ProtectedRoute>
                 <GalleryUpload />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="admin/manuscript" 
+          <Route
+            path="admin/manuscript"
             element={
               <ProtectedRoute>
                 <ManuscriptForm />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="admin/history" 
+          <Route
+            path="admin/history"
             element={
               <ProtectedRoute>
                 <EditHistory />
               </ProtectedRoute>
-            } 
+            }
           />
+          <Route
+            path="master/gender"
+            element={
+              <ProtectedRoute>
+                <GenderPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="usermanagement/usertype"
+            element={
+              <ProtectedRoute>
+                <UserTypePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="master/menu"
+            element={
+              <ProtectedRoute>
+                <MenuPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="usermanagement/userpermission"
+            element={
+              <ProtectedRoute>
+                <UserPermission />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="usermanagement/usercreation"
+            element={
+              <ProtectedRoute>
+                <UserCreation />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="usermanagement/usercreation/add"
+            element={
+              <ProtectedRoute>
+                <UserCreationAdd />
+              </ProtectedRoute>
+            }
+          />
+             <Route
+            path="usermanagement/usercreation/edit/:id"
+            element={
+              <ProtectedRoute>
+                <UserCreationEdit />
+              </ProtectedRoute>
+            }
+          />
+          
+          
+
+          <Route
+            path="usermanagement/role"
+            element={
+              <ProtectedRoute>
+                <RolePage />
+              </ProtectedRoute>
+            }
+          />
+        
+         
 
           {/* 404 Page */}
           <Route path="*" element={<NotFound />} />

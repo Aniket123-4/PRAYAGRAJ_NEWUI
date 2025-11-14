@@ -1,3 +1,5 @@
+
+
 // import { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 // import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -26,6 +28,14 @@
 //   const [zoomLevel, setZoomLevel] = useState<number>(1);
 //   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(false);
 
+//   // Filter only gallery events (not home events)
+//   const galleryEvents = events.filter(event => 
+//     !event.name.toLowerCase().includes('home') && 
+//     !event.name.toLowerCase().includes('slider') &&
+//     !event.name.toLowerCase().includes('carousel')&&
+//     !event.name.toLowerCase().includes('landing')
+//   );
+
 //   // Helper function to get image URL from Base64 data
 //   const getImageUrl = (imageData: string) => {
 //     if (imageData.startsWith('data:')) {
@@ -39,10 +49,10 @@
 //   }, [dispatch]);
 
 //   useEffect(() => {
-//     if (events.length > 0 && !selectedEvent) {
-//       setSelectedEvent(events[0]._id);
+//     if (galleryEvents.length > 0 && !selectedEvent) {
+//       setSelectedEvent(galleryEvents[0]._id);
 //     }
-//   }, [events, selectedEvent]);
+//   }, [galleryEvents, selectedEvent]);
 
 //   useEffect(() => {
 //     if (selectedEvent) {
@@ -50,7 +60,7 @@
 //     }
 //   }, [selectedEvent, dispatch]);
 
-//   const currentEvent = events.find(event => event._id === selectedEvent);
+//   const currentEvent = galleryEvents.find(event => event._id === selectedEvent);
 
 //   // Modal navigation functions
 //   const openImageModal = (imageData: string, index: number) => {
@@ -183,15 +193,15 @@
 //           Photo Gallery
 //         </motion.h1>
 
-//         {/* Event Filter */}
-//         {events.length > 0 && (
+//         {/* Event Filter - Only show gallery events */}
+//         {galleryEvents.length > 0 ? (
 //           <motion.div 
 //             className="flex flex-wrap gap-3 justify-center mb-8"
 //             initial={{ opacity: 0, y: 20 }}
 //             animate={{ opacity: 1, y: 0 }}
 //             transition={{ duration: 0.6, delay: 0.2 }}
 //           >
-//             {events.map((event) => (
+//             {galleryEvents.map((event) => (
 //               <motion.button
 //                 key={event._id}
 //                 onClick={() => setSelectedEvent(event._id)}
@@ -207,6 +217,18 @@
 //               </motion.button>
 //             ))}
 //           </motion.div>
+//         ) : (
+//           !loading && (
+//             <motion.div 
+//               className="text-center mb-8"
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//             >
+//               <p className="text-muted-foreground text-lg">
+//                 No gallery events found.
+//               </p>
+//             </motion.div>
+//           )
 //         )}
 
 //         {/* Event Description */}
@@ -240,7 +262,7 @@
 //         )}
 
 //         {/* Image Grid */}
-//         {!loading && (
+//         {!loading && selectedEvent && (
 //           <motion.div 
 //             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
 //             initial={{ opacity: 0 }}
@@ -467,13 +489,6 @@
 // }
 
 
-
-
-
-
-
-
-
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -491,9 +506,11 @@ import {
 } from "lucide-react";
 import { RootState } from "@/redux/store";
 import { fetchEvents, fetchImagesByEvent } from "@/redux/slices/gallerySlice";
+import { useTranslation } from "react-i18next";
 
 export default function Gallery() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { events, images, loading } = useSelector((state: RootState) => state.gallery);
   
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -664,7 +681,7 @@ export default function Gallery() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          Photo Gallery
+          {t('gallery.title')}
         </motion.h1>
 
         {/* Event Filter - Only show gallery events */}
@@ -699,7 +716,7 @@ export default function Gallery() {
               animate={{ opacity: 1 }}
             >
               <p className="text-muted-foreground text-lg">
-                No gallery events found.
+                {t('gallery.noEvents')}
               </p>
             </motion.div>
           )
@@ -732,6 +749,7 @@ export default function Gallery() {
             >
               <Loader2 className="h-12 w-12 text-primary" />
             </motion.div>
+            <span className="ml-4 text-muted-foreground">{t('gallery.loading')}</span>
           </motion.div>
         )}
 
@@ -787,7 +805,7 @@ export default function Gallery() {
             animate={{ opacity: 1 }}
           >
             <div className="text-muted-foreground text-xl">
-              No images found for this event.
+              {t('gallery.noImages')}
             </div>
           </motion.div>
         )}
@@ -851,7 +869,7 @@ export default function Gallery() {
                       </motion.button>
                       
                       <span className="text-white text-sm px-2 min-w-[60px] text-center">
-                        {Math.round(zoomLevel * 100)}%
+                        {t('gallery.modal.zoom', { percentage: Math.round(zoomLevel * 100) })}
                       </span>
                       
                       <motion.button
@@ -871,7 +889,7 @@ export default function Gallery() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                         >
-                          Reset
+                          {t('gallery.modal.reset')}
                         </motion.button>
                       )}
                     </div>
@@ -883,6 +901,7 @@ export default function Gallery() {
                         className="bg-black/60 text-white rounded-full p-3 backdrop-blur-sm border border-white/20 hover:bg-black/80 transition-colors"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
+                        title={isAutoPlaying ? t('gallery.modal.pause') : t('gallery.modal.play')}
                       >
                         {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
                       </motion.button>
@@ -894,6 +913,7 @@ export default function Gallery() {
                       className="bg-black/60 text-white rounded-full p-3 backdrop-blur-sm border border-white/20 hover:bg-black/80 transition-colors"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
+                      title={t('gallery.modal.download')}
                     >
                       <Download size={20} />
                     </motion.button>
@@ -902,7 +922,10 @@ export default function Gallery() {
                   {/* Image Counter */}
                   {images.length > 1 && (
                     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/60 text-white rounded-full px-4 py-2 z-50 backdrop-blur-sm border border-white/20">
-                      {currentImageIndex + 1} / {images.length}
+                      {t('gallery.modal.imageCounter', { 
+                        current: currentImageIndex + 1, 
+                        total: images.length 
+                      })}
                     </div>
                   )}
 

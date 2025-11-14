@@ -38,17 +38,12 @@ import {
 import ThreeHero from '../components/ThreeHero';
 import DynamicHomeSlider from '../components/DynamicHomeSlider';
 import DynamicCarousel from '../components/DynamicCarousel';
-// import DynamicHomeSlider from '../components/DynamicHomeSlider';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from '../utils/translations';
+import { useTranslation } from "react-i18next";
 import gmsImage from '../assets/gms.webp';
-// import entranceFacade from '../assets/entrance-facade.jpg';
-// import readingHall from '../assets/bookshelf-interior.jpg';
-// import rareBooks from '../assets/rare-books.jpg';
-// import digitalSection from '../assets/digital-section.jpg';
-// import gardenView from '../assets/IMG-20250925-WA0040.jpg';
+
 import p1 from '../ExternalLogoImages/p1.webp';
 import p2 from '../ExternalLogoImages/p2.webp';
 import p3 from '../ExternalLogoImages/p3.webp';
@@ -61,7 +56,7 @@ import p8 from '../ExternalLogoImages/p8.webp';
 
 const Home: React.FC = () => {
   const { language, theme } = useTheme();
-  const t = useTranslation(language);
+  const { t } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -118,53 +113,7 @@ const Home: React.FC = () => {
     );
   };
 
-  // Library building images for carousel
-  // const libraryImages = [
-  //   {
-  //     src: entranceFacade,
-  //     alt: 'Library Entrance Facade',
-  //     title: 'Grand Entrance Facade',
-  //     description: 'The magnificent Gothic/Scottish architecture of Prayagraj Public Library'
-  //   },
-  //   {
-  //     src: readingHall,
-  //     alt: 'Main Reading Hall',
-  //     title: 'Spacious Reading Hall',
-  //     description: 'Peaceful environment for focused study and research'
-  //   },
-  //   {
-  //     src: rareBooks,
-  //     alt: 'Rare Books Section',
-  //     title: 'Rare Manuscripts Collection',
-  //     description: 'Preserving ancient knowledge for future generations'
-  //   },
-  //   {
-  //     src: digitalSection,
-  //     alt: 'Digital Library Section',
-  //     title: 'Modern Digital Infrastructure',
-  //     description: 'Blending traditional knowledge with modern technology'
-  //   },
-  //   {
-  //     src: gardenView,
-  //     alt: 'Library Garden View',
-  //     title: 'Serene Campus Environment',
-  //     description: 'Beautiful surroundings in Chandra Shekhar Azad Park'
-  //   }
-  // ];
-
-  // Auto-play carousel
-  // useEffect(() => {
-  //   if (!isAutoPlaying) return;
-
-  //   const interval = setInterval(() => {
-  //     setCurrentImageIndex((prevIndex) =>
-  //       prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
-  //     );
-  //   }, 4000);
-
-  //   return () => clearInterval(interval);
-  // }, [isAutoPlaying, libraryImages.length]);
-
+ 
   // Intersection Observer for scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -185,59 +134,48 @@ const Home: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  // const nextImage = () => {
-  //   setCurrentImageIndex((prevIndex) =>
-  //     prevIndex === libraryImages.length - 1 ? 0 : prevIndex + 1
-  //   );
-  // };
-
-  // const prevImage = () => {
-  //   setCurrentImageIndex((prevIndex) =>
-  //     prevIndex === 0 ? libraryImages.length - 1 : prevIndex - 1
-  //   );
-  // };
-
   const goToImage = (index: number) => {
     setCurrentImageIndex(index);
   };
 
-  const stats = [
-    { icon: BookOpen, label: t('booksResources'), value: '2,50,000+', suffix: '' },
-    { icon: Users, label: t('activeMembers'), value: '15,000+', suffix: '' },
-    { icon: Archive, label: t('historicalDocuments'), value: '5,000+', suffix: '' },
-    { icon: Globe, label: t('digitalCollections'), value: '50,000+', suffix: '' },
+ const stats = [
+    { icon: BookOpen, label: t('home.stats.booksResources'), value: '2,50,000+', suffix: '' },
+    { icon: Users, label: t('home.stats.activeMembers'), value: '15,000+', suffix: '' },
+    { icon: Archive, label: t('home.stats.historicalDocuments'), value: '5,000+', suffix: '' },
+    { icon: Globe, label: t('home.stats.digitalCollections'), value: '50,000+', suffix: '' },
   ];
 
   const services = [
     {
       icon: BookOpen,
-      title: t('libraryMembership'),
-      description: t('membershipDescription'),
+      title: t('home.services.libraryMembership'),
+      description: t('home.services.membershipDescription'),
       href: '/membership',
       gradient: 'bg-gradient-primary'
     },
     {
       icon: Archive,
-      title: t('digitalArchives'),
-      description: t('archivesDescription'),
+      title: t('home.services.digitalArchives'),
+      description: t('home.services.archivesDescription'),
       href: '/archives/gallery',
       gradient: 'bg-gradient-secondary'
     },
     {
       icon: Search,
-      title: t('researchServices'),
-      description: t('researchDescription'),
+      title: t('home.services.researchServices'),
+      description: t('home.services.researchDescription'),
       href: '/services/services',
       gradient: 'bg-gradient-accent'
     },
     {
       icon: Download,
-      title: t('eResources'),
-      description: t('eResourcesDescription'),
+      title: t('home.services.eResources'),
+      description: t('home.services.eResourcesDescription'),
       href: '/services/e-services',
       gradient: 'bg-gradient-primary'
     },
   ];
+
 
   // Add this inside your Home component, after the other constants like stats, services, etc.
   const logoImages = [
@@ -389,7 +327,6 @@ const Home: React.FC = () => {
 
   return (
     <div className={`w-full ${themeClasses.pageBackground} ${language === 'hi' ? 'lang-hindi' : 'lang-english'}`}>
-      {/* Hero Section */}
       <section className={`relative h-screen flex items-center justify-center overflow-hidden ${themeClasses.heroBackground}`}>
         {/* Animated Background Elements */}
         <motion.div
@@ -445,7 +382,7 @@ const Home: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              {t('heroTitle')}
+              {t('home.hero.title')}
             </motion.h1>
 
             <motion.h2
@@ -454,7 +391,7 @@ const Home: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              {t('heroSubtitle')}
+ {t('home.hero.subtitle')}
             </motion.h2>
 
             <motion.p
@@ -463,7 +400,7 @@ const Home: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.8 }}
             >
-              {t('heroDescription')}
+             {t('home.hero.description')}
             </motion.p>
 
             <motion.div
@@ -480,7 +417,7 @@ const Home: React.FC = () => {
                   className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl"
                 >
                   <BookOpen className="mr-3 h-6 w-6" />
-                  {t("exploreCollections")}
+                     {t("home.hero.exploreCollections")}
                   <ArrowUpRight className="ml-2 h-5 w-5" />
                 </Button>
               </motion.div>
@@ -490,7 +427,7 @@ const Home: React.FC = () => {
                   onClick={() => navigate("/membership")}
                   className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl">
                   <Users className="mr-3 h-6 w-6" />
-                  {t('becomeMember')}
+                   {t('home.hero.becomeMember')}
                   <ArrowUpRight className="ml-2 h-5 w-5" />
                 </Button>
               </motion.div>
@@ -1109,7 +1046,7 @@ const Home: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              {t('ourServices')}
+                {t('home.services.ourServices')}
             </motion.h2>
 
             <motion.p
@@ -1119,7 +1056,7 @@ const Home: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              {t('servicesDescription')}
+              {t('home.services.description')}
             </motion.p>
           </motion.div>
 
@@ -1598,7 +1535,7 @@ const Home: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              {t('startJourney')}
+                      {t('home.cta.startJourney')}
             </motion.h2>
 
             <motion.p
@@ -1608,7 +1545,7 @@ const Home: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              {t('ctaDescription')}
+          {t('home.cta.description')}
             </motion.p>
 
             <motion.div
@@ -1621,7 +1558,7 @@ const Home: React.FC = () => {
               <Link to="/membership">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button size="lg" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl">
-                    {t('getMembership')}
+                     {t('home.cta.getMembership')}
                     <ArrowUpRight className="ml-2 h-5 w-5" />
                   </Button>
                 </motion.div>
@@ -1630,7 +1567,7 @@ const Home: React.FC = () => {
               <Link to="/contact">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button size="lg" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4 text-lg font-semibold shadow-2xl">
-                    {t('contactUs')}
+                 {t('home.cta.contactUs')}
                     <ArrowUpRight className="ml-2 h-5 w-5" />
                   </Button>
                 </motion.div>

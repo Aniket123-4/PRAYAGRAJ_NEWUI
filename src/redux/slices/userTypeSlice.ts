@@ -1,10 +1,13 @@
+// src/redux/slices/userTypeSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../utils/Url";
 
 interface UserType {
-  id: number;
-  name: string;
-  code: string;
+  _id: string;
+  userTypeName: string;
+  userTypeCode: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface UserTypeState {
@@ -19,31 +22,33 @@ const initialState: UserTypeState = {
   error: null,
 };
 
-export const fetchUserTypes = createAsyncThunk("usertype/fetchUserTypes", async () => {
-  const response = await api.get("/usertype/get");
-  return response.data.data;
-});
+// Get all user types
+export const fetchUserTypes = createAsyncThunk(
+  "usertype/fetchUserTypes", 
+  async () => {
+    const response = await api.post("/userTypes/get");
+    return response.data.data;
+  }
+);
 
-export const createUserType = createAsyncThunk(
-  "usertype/createUserType",
-  async (data: { name: string; code: string }) => {
-    const response = await api.post("usertype/create", data);
+// Create or update user type
+export const saveOrUpdateUserType = createAsyncThunk(
+  "usertype/saveOrUpdateUserType",
+  async (data: { 
+    id?: string; 
+    userTypeName: string; 
+    userTypeCode: string 
+  }) => {
+    const response = await api.post("/userTypes/save", data);
     return response.data;
   }
 );
 
-export const updateUserType = createAsyncThunk(
-  "usertype/updateUserType",
-  async (data: { id: number; name: string; code: string }) => {
-    const response = await api.put("usertype/update", data);
-    return response.data;
-  }
-);
-
+// Delete user type
 export const deleteUserType = createAsyncThunk(
   "usertype/deleteUserType",
-  async (id: number) => {
-    const response = await api.delete(`usertype/delete/${id}`);
+  async (id: string) => {
+    const response = await api.post("/userTypes/delete", { id });
     return response.data;
   }
 );
@@ -51,9 +56,14 @@ export const deleteUserType = createAsyncThunk(
 const usertypeSlice = createSlice({
   name: "usertype",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
+      // Fetch User Types
       .addCase(fetchUserTypes.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -67,30 +77,20 @@ const usertypeSlice = createSlice({
         state.error = action.error.message || "Failed to fetch user types";
       })
 
-      .addCase(createUserType.pending, (state) => {
+      // Save or Update User Type
+      .addCase(saveOrUpdateUserType.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createUserType.fulfilled, (state) => {
+      .addCase(saveOrUpdateUserType.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(createUserType.rejected, (state, action) => {
+      .addCase(saveOrUpdateUserType.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to create user type";
+        state.error = action.error.message || "Failed to save user type";
       })
 
-      .addCase(updateUserType.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserType.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(updateUserType.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to update user type";
-      })
-
+      // Delete User Type
       .addCase(deleteUserType.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -105,7 +105,5 @@ const usertypeSlice = createSlice({
   },
 });
 
+export const { clearError } = usertypeSlice.actions;
 export default usertypeSlice.reducer;
-
-
-
