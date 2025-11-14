@@ -12,6 +12,14 @@ import collectionReducer from "./slices/collectionSlice"
 import aboutReducer from "./slices/aboutSlice"
 import eserviceReducer from "./slices/eserviceSlice"
 import membershipReducer from "./slices/membershipSlice";
+import menuReducer from "./slices/menuSlice";
+import roleReducer from "./slices/roleSlice";
+import userReducer from "./slices/userSlice";
+import userpermissionReducer from "./slices/userPermissionSlice";
+import usertypeReducer from "./slices/userTypeSlice";
+import genderReducer from "./slices/genderSlice";
+import helpReducer from "./slices/helpSlice";
+
 export const store = configureStore({
   reducer: {
     auth: authSlice,
@@ -27,6 +35,13 @@ export const store = configureStore({
     about:aboutReducer,
     eservice:eserviceReducer,
     membership:membershipReducer,
+    menu:menuReducer,
+    role:roleReducer,
+    user:userReducer,
+    userPermission:userpermissionReducer,
+    usertype:usertypeReducer,
+    gender:genderReducer,
+    help: helpReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

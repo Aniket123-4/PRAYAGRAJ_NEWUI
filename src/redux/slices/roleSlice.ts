@@ -3,27 +3,33 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../utils/Url";
 
 interface Role {
-  RoleID: number;
-  RoleName: string;
+  _id: string;
+  roleName: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface Permission {
-  MenuId: number;
-  ParentId: number;
-  IsAdd: boolean;
-  IsEdit: boolean;
-  IsDel: boolean;
-  IsView: boolean;
-  IsPrint: boolean;
-  IsExport: boolean;
-  IsRelease: boolean;
-  IsPost: boolean;
+  menuId: string;
+  parentId?: string;
+  isAdd: boolean;
+  isEdit: boolean;
+  isDel: boolean;
+  isView: boolean;
+  isPrint: boolean;
+  isExport: boolean;
+  isRelease: boolean;
+  isPost: boolean;
 }
 
 interface RoleDetails {
-  RoleID: number;
-  RoleName: string;
+  _id: string;
+  roleName: string;
   permissions: Permission[];
+  createdBy?: any;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface RoleState {
@@ -40,52 +46,40 @@ const initialState: RoleState = {
   error: null,
 };
 
+// ✅ Fetch all roles - send empty object to avoid destructuring error
 export const fetchRoles = createAsyncThunk("role/fetchRoles", async () => {
-  const response = await api.get("/roleuser/get");
+  const response = await api.post("/roles/get", {}); // Send empty object
   return response.data.data;
 });
 
+// ✅ Fetch specific role details
 export const fetchRoleDetails = createAsyncThunk(
   "role/fetchRoleDetails",
-  async (roleId: number) => {
-    const response = await api.get(`/roleuser/get/${roleId}`);
+  async (roleId: string) => {
+    const response = await api.post("/roles/get", { id: roleId });
     return response.data.data;
   }
 );
 
-export const createRole = createAsyncThunk(
-  "role/createRole",
+// ✅ Create or update role (both handled by /save)
+export const saveRole = createAsyncThunk(
+  "role/saveRole",
   async (data: {
+    id?: string;
     roleName: string;
-    rolePermission: any[];
-    user_ID: string;
-    createdDt: string;
-    modifyDt: string;
+    permissions: Permission[];
+    userId: string;
   }) => {
-    const response = await api.post("/roleuser/create", data);
+    const response = await api.post("/roles/save", data);
     return response.data;
   }
 );
 
-export const updateRole = createAsyncThunk(
-  "role/updateRole",
-  async (data: {
-    roleId: number;
-    roleName: string;
-    rolePermission: any[];
-    user_ID: string;
-    createdDt: string;
-    modifyDt: string;
-  }) => {
-    const response = await api.put("/roleuser/update", data);
-    return response.data;
-  }
-);
-
+// ✅ Delete role
 export const deleteRole = createAsyncThunk(
   "role/deleteRole",
-  async (roleId: number) => {
-    const response = await api.delete(`/roleuser/delete/${roleId}`);
+  async (roleId: string) => {
+    const response = await api.post("/roles/delete", { id: roleId });
     return response.data;
   }
 );
@@ -100,6 +94,7 @@ const roleSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch all roles
       .addCase(fetchRoles.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -113,6 +108,7 @@ const roleSlice = createSlice({
         state.error = action.error.message || "Failed to fetch roles";
       })
 
+      // Fetch role details
       .addCase(fetchRoleDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -126,30 +122,20 @@ const roleSlice = createSlice({
         state.error = action.error.message || "Failed to fetch role details";
       })
 
-      .addCase(createRole.pending, (state) => {
+      // Save (Create/Update)
+      .addCase(saveRole.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createRole.fulfilled, (state) => {
+      .addCase(saveRole.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(createRole.rejected, (state, action) => {
+      .addCase(saveRole.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to create role";
+        state.error = action.error.message || "Failed to save role";
       })
 
-      .addCase(updateRole.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateRole.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(updateRole.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to update role";
-      })
-
+      // Delete role
       .addCase(deleteRole.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -161,7 +147,6 @@ const roleSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Failed to delete role";
       });
-      
   },
 });
 

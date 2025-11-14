@@ -6,7 +6,7 @@
 // import { Input } from '../components/ui/input';
 // import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 // import { useTheme } from '../contexts/ThemeContext';
-// import { useTranslation } from '../utils/translations';
+// import { useTranslation } from "react-i18next";
 
 // const LoginPage: React.FC = () => {
 //   const [username, setUsername] = useState('');
@@ -208,7 +208,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { useTheme } from "../contexts/ThemeContext";
-import { useTranslation } from "../utils/translations";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
@@ -218,7 +218,7 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { language } = useTheme();
-  const t = useTranslation(language);
+  const t = useTranslation();
 
   const { loading, error, token } = useSelector((state: any) => state.auth);
 

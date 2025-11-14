@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { useTranslation } from 'react-i18next';
 
 const Footer: React.FC = () => {
   const [feedbackForm, setFeedbackForm] = useState({
@@ -29,6 +30,8 @@ const Footer: React.FC = () => {
     subject: '',
     message: ''
   });
+
+  const { t } = useTranslation();
 
   const handleFeedbackChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFeedbackForm({
@@ -41,7 +44,7 @@ const Footer: React.FC = () => {
     e.preventDefault();
     // Handle feedback submission
     console.log('Feedback submitted:', feedbackForm);
-    alert('Thank you for your feedback! We will get back to you soon.');
+    alert(t('footer.form.thankYou'));
     setFeedbackForm({
       name: '',
       contact: '',
@@ -53,39 +56,55 @@ const Footer: React.FC = () => {
 
   const importantLinks = [
     { 
-      label: 'Pay Your Fees', 
+      label: t('footer.links.payFees'), 
       href: '/services/e-services', 
       icon: CreditCard 
     },
     { 
-      label: 'Membership', 
+      label: t('footer.links.membership'), 
       href: '/membership', 
       icon: User 
     },
     { 
-      label: 'History', 
+      label: t('footer.links.history'), 
       href: '/archives/history', 
       icon: History 
     },
     { 
-      label: 'Gallery', 
+      label: t('footer.links.gallery'), 
       href: '/archives/gallery', 
       icon: ImageIcon 
     },
   ];
 
   const contactDetails = {
-    address: 'Government Public Library Chandra Sekhar Azad Park, Prayagraj - 211002',
-    phone: '+91 0532 2460197',
-    email1: 'info@aliahabadpublic.org',
-    email2: 'governmentpubliclibrary@gmail.com'
+    address: t('footer.contact.address'),
+    phone: t('footer.contact.phone'),
+    email1: t('footer.contact.email1'),
+    email2: t('footer.contact.email2')
   };
 
   const socialLinks = [
-    { icon: Facebook, href: 'https://www.facebook.com/agplib?ref=embed_page', label: 'Facebook' },
-    { icon: Twitter, href: 'https://x.com/theupindex/status/1665654584021270528', label: 'Twitter' },
-    { icon: Instagram, href: 'https://www.instagram.com/explore/locations/517040095388845/allahabad-government-public-library/?hl=en', label: 'Instagram' },
-    { icon: Youtube, href: 'https://www.youtube.com/watch?v=eZEr4Oryxos', label: 'YouTube' },
+    { 
+      icon: Facebook, 
+      href: 'https://www.facebook.com/agplib?ref=embed_page', 
+      label: t('footer.social.facebook') 
+    },
+    { 
+      icon: Twitter, 
+      href: 'https://x.com/theupindex/status/1665654584021270528', 
+      label: t('footer.social.twitter') 
+    },
+    { 
+      icon: Instagram, 
+      href: 'https://www.instagram.com/explore/locations/517040095388845/allahabad-government-public-library/?hl=en', 
+      label: t('footer.social.instagram') 
+    },
+    { 
+      icon: Youtube, 
+      href: 'https://www.youtube.com/watch?v=eZEr4Oryxos', 
+      label: t('footer.social.youtube') 
+    },
   ];
 
   return (
@@ -106,7 +125,7 @@ const Footer: React.FC = () => {
               >
                 <h4 className="text-lg font-semibold mb-4 gradient-text flex items-center">
                   <ExternalLink className="h-5 w-5 mr-2" />
-                  Important Links
+                  {t('footer.importantLinks')}
                 </h4>
                 <div className="space-y-3">
                   {importantLinks.map((link, index) => (
@@ -140,7 +159,7 @@ const Footer: React.FC = () => {
               >
                 <h4 className="text-lg font-semibold mb-4 gradient-text flex items-center">
                   <MapPin className="h-5 w-5 mr-2" />
-                  Contact Details
+                  {t('footer.contactDetails')}
                 </h4>
                 <div className="space-y-4 bg-slate-50 dark:bg-slate-800 rounded-lg p-4">
                   <div className="flex items-start space-x-3">
@@ -171,7 +190,9 @@ const Footer: React.FC = () => {
 
                 {/* Social Links */}
                 <div className="mt-6">
-                  <h5 className="font-medium mb-3 text-gray-700 dark:text-gray-300">Follow Us</h5>
+                  <h5 className="font-medium mb-3 text-gray-700 dark:text-gray-300">
+                    {t('footer.followUs')}
+                  </h5>
                   <div className="flex space-x-3">
                     {socialLinks.map((social, index) => (
                       <motion.a
@@ -201,7 +222,7 @@ const Footer: React.FC = () => {
           >
             <h4 className="text-lg font-semibold mb-4 gradient-text flex items-center">
               <Send className="h-5 w-5 mr-2" />
-              Feedback Form
+              {t('footer.feedbackForm')}
             </h4>
             
             <form onSubmit={handleFeedbackSubmit} className="space-y-4">
@@ -209,7 +230,7 @@ const Footer: React.FC = () => {
                 <Input
                   type="text"
                   name="name"
-                  placeholder="Enter Your Name/Organization"
+                  placeholder={t('footer.form.name')}
                   value={feedbackForm.name}
                   onChange={handleFeedbackChange}
                   required
@@ -220,7 +241,7 @@ const Footer: React.FC = () => {
                   <Input
                     type="tel"
                     name="contact"
-                    placeholder="Enter Contact No."
+                    placeholder={t('footer.form.contact')}
                     value={feedbackForm.contact}
                     onChange={handleFeedbackChange}
                     required
@@ -230,7 +251,7 @@ const Footer: React.FC = () => {
                   <Input
                     type="email"
                     name="email"
-                    placeholder="Enter Email Id"
+                    placeholder={t('footer.form.email')}
                     value={feedbackForm.email}
                     onChange={handleFeedbackChange}
                     required
@@ -241,7 +262,7 @@ const Footer: React.FC = () => {
                 <Input
                   type="text"
                   name="subject"
-                  placeholder="Enter Subject"
+                  placeholder={t('footer.form.subject')}
                   value={feedbackForm.subject}
                   onChange={handleFeedbackChange}
                   required
@@ -250,7 +271,7 @@ const Footer: React.FC = () => {
                 
                 <textarea
                   name="message"
-                  placeholder="Enter Your Message"
+                  placeholder={t('footer.form.message')}
                   rows={4}
                   value={feedbackForm.message}
                   onChange={handleFeedbackChange}
@@ -260,13 +281,12 @@ const Footer: React.FC = () => {
               </div>
 
               <div className="text-center">
-            
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
                 >
                   <Send className="h-4 w-4 mr-2" />
-                  SUBMIT
+                  {t('footer.form.submit')}
                 </Button>
               </div>
             </form>
@@ -287,9 +307,11 @@ const Footer: React.FC = () => {
                 <Book className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-bold gradient-text">GPL Prayagraj</h3>
+                <h3 className="text-lg font-bold gradient-text">
+                  {t('footer.libraryInfo.name')}
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Government Public Library
+                  {t('footer.libraryInfo.fullName')}
                 </p>
               </div>
             </div>
@@ -299,8 +321,8 @@ const Footer: React.FC = () => {
               <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4 text-primary flex-shrink-0" />
                 <div>
-                  <div>Monday - Saturday: 9:30 AM - 5:30 PM</div>
-                  <div>Closed on Thursdays & Government Holidays</div>
+                  <div>{t('footer.hours.weekdays')}</div>
+                  <div>{t('footer.hours.closed')}</div>
                 </div>
               </div>
             </div>
@@ -308,8 +330,8 @@ const Footer: React.FC = () => {
             {/* Copyright */}
             <div className="text-right">
               <div className="text-sm text-muted-foreground">
-                <div>© 2025 Government Public Library Prayagraj.</div>
-                <div>All rights reserved.</div>
+                <div>{t('footer.libraryInfo.copyright')}</div>
+                <div>{t('footer.libraryInfo.rights')}</div>
               </div>
             </div>
           </div>
@@ -321,24 +343,24 @@ const Footer: React.FC = () => {
                 to="/privacy" 
                 className="text-muted-foreground hover:text-primary transition-colors duration-200"
               >
-                Privacy Policy
+                {t('footer.additionalLinks.privacy')}
               </Link>
               <Link 
                 to="/terms" 
                 className="text-muted-foreground hover:text-primary transition-colors duration-200"
               >
-                Terms of Service
+                {t('footer.additionalLinks.terms')}
               </Link>
               <Link 
                 to="/accessibility" 
                 className="text-muted-foreground hover:text-primary transition-colors duration-200"
               >
-                Accessibility
+                {t('footer.additionalLinks.accessibility')}
               </Link>
             </div>
             
             <div className="text-xs text-muted-foreground">
-              Established 1864 • Serving the Community for 160+ Years
+              {t('footer.libraryInfo.established')}
             </div>
           </div>
         </motion.div>

@@ -1,34 +1,44 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../utils/Url";
 
+interface IPermission {
+  menuId: string;
+  isAdd: boolean;
+  isEdit: boolean;
+  isDel: boolean;
+  isView: boolean;
+  isPrint: boolean;
+  isExport: boolean;
+  isRelease: boolean;
+  isPost: boolean;
+}
+
 interface IUser {
-  USER_ID?: number;
-  RANK_ID: string;
-  SUR_NAME: string;
-  FIRST_NAME: string;
-  MIDDLE_NAME: string;
-  SHORT_NAME: string;
-  USER_CODE: string;
-  DOB: string | null;
-  DOA: string | null;
-  DOJ: string | null;
-  GENDER_ID: number;
-  CUR_PHONE: string | null;
-  CUR_MOBILE: string;
-  EMAIL: string;
-  IS_ACTIVE: boolean;
-  IS_DELETED: boolean;
-  USER_TYPE_ID: number;
-  OTP: string;
-  EmployeeId: number | null;
-  EmployeeUserId: number | null;
-  Source: string;
-  LOGIN_NAME: string;
-  IS_SYSTEM: boolean;
-  ORG_ID: string;
-  RoleName: string | null;
-  PASSWORD?: string;
-  CONFIRM_PASSWORD?: string;
+  _id?: string;
+  id?: string;
+  loginName: string;
+  password?: string;
+  isSystem: boolean;
+  orgId: string;
+  firstName: string;
+  surName: string;
+  middleName?: string;
+  shortName?: string;
+  userCode?: string;
+  email: string;
+  dob?: string | null;
+  doj?: string | null;
+  curMobile?: string;
+  genderId?: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  userType: string;
+  roles: string[];
+  userSpecificPermissions: IPermission[];
+  employeeId?: string;
+  EmployeeUserId?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface UserState {
@@ -45,12 +55,27 @@ const initialState: UserState = {
   error: null,
 };
 
-// Fetch all users
-export const fetchUsers = createAsyncThunk(
-  "user/fetchUsers",
-  async (_, { rejectWithValue }) => {
+// Save user (create or update)
+export const saveUser = createAsyncThunk(
+  "user/saveUser",
+  async (userData: any, { rejectWithValue }) => {
     try {
-      const response = await api.get("/user/get/-1");
+      const response = await api.post("/users/save", userData);
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to save user"
+      );
+    }
+  }
+);
+
+// Get users (all or single)
+export const getUsers = createAsyncThunk(
+  "user/getUsers",
+  async (id?: string, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/users/get", { id });
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -60,63 +85,12 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
-// Fetch single user by ID
-export const fetchUserById = createAsyncThunk(
-  "user/fetchUserById",
-  async (id: number, { rejectWithValue }) => {
-    try {
-      const response = await api.get(`/user/get/${id}`);
-      return response.data.data[0]; // Return first item from data array
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch user"
-      );
-    }
-  }
-);
-
-// Create new user
-export const createUser = createAsyncThunk(
-  "user/createUser",
-  async (userData: Omit<IUser, "USER_ID">, { rejectWithValue }) => {
-    try {
-      const response = await api.post("/user/create", userData);
-
-      return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to create user"
-      );
-    }
-  }
-);
-
-// Update existing user
-export const updateUser = createAsyncThunk(
-  "user/updateUser",
-  async (userData: IUser, { rejectWithValue }) => {
-    try {
-      const response = await api.put(
-        `/user/update/${userData.USER_ID}`,
-        userData
-      );
-
-      return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to update user"
-      );
-    }
-  }
-);
-
-// Delete user
+// Delete user (soft delete)
 export const deleteUser = createAsyncThunk(
   "user/deleteUser",
-  async (id: number, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
-      await api.delete(`/user/delete/${id}`);
-
+      const response = await api.post("/users/delete", { id });
       return id;
     } catch (error: any) {
       return rejectWithValue(
@@ -136,70 +110,52 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Users
-      .addCase(fetchUsers.pending, (state) => {
+      // Save User (Create/Update)
+      .addCase(saveUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(saveUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = action.payload;
-      })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-
-      // Fetch User by ID
-      .addCase(fetchUserById.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchUserById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.currentUser = action.payload;
-      })
-      .addCase(fetchUserById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-
-      // Create User
-      .addCase(createUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createUser.fulfilled, (state, action) => {
-        state.loading = false;
-        if (action.payload) {
-          state.users.push(action.payload);
-        }
-      })
-      .addCase(createUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-
-      // Update User
-      .addCase(updateUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.loading = false;
-        if (action.payload) {
+        if (action.payload._id) {
+          // Update existing user
           const index = state.users.findIndex(
-            (user) => user.USER_ID === action.payload.USER_ID
+            (user) => user._id === action.payload._id
           );
           if (index !== -1) {
             state.users[index] = action.payload;
+          } else {
+            state.users.push(action.payload);
           }
-          if (state.currentUser?.USER_ID === action.payload.USER_ID) {
+          if (state.currentUser?._id === action.payload._id) {
             state.currentUser = action.payload;
           }
+        } else {
+          // Add new user
+          state.users.push(action.payload);
         }
       })
-      .addCase(updateUser.rejected, (state, action) => {
+      .addCase(saveUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Get Users
+      .addCase(getUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        if (Array.isArray(action.payload)) {
+          // Multiple users
+          state.users = action.payload;
+        } else {
+          // Single user
+          state.currentUser = action.payload;
+        }
+      })
+      .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -212,9 +168,9 @@ const userSlice = createSlice({
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
         state.users = state.users.filter(
-          (user) => user.USER_ID !== action.payload
+          (user) => user._id !== action.payload
         );
-        if (state.currentUser?.USER_ID === action.payload) {
+        if (state.currentUser?._id === action.payload) {
           state.currentUser = null;
         }
       })
