@@ -1305,5 +1305,97 @@
     "forest": "फॉरेस्ट",
     "dark": "डार्क",
     "search": "खोजें..."
+  },
+   "membership": {
+    "title": "पुस्तकालय सदस्यता",
+    "subtitle": "हमारे प्रतिष्ठित पुस्तकालय समुदाय में शामिल हों और विशाल ज्ञान संसाधनों तक पहुंच प्राप्त करें",
+    "benefits": {
+      "title": "सदस्यता लाभ",
+      "subtitle": "विशेष विशेषाधिकार और हमारे विशाल संग्रह तक पहुंच अनलॉक करें",
+      "books": "2,50,000+ पुस्तकें",
+      "booksDescription": "विशाल संग्रह तक पहुंच",
+      "members": "{{count}}+ सदस्य",
+      "membersDescription": "हमारे समुदाय में शामिल हों",
+      "digitalArchives": "डिजिटल अभिलेखागार",
+      "digitalArchivesDescription": "दुर्लभ दस्तावेजों तक पहुंच",
+      "extendedHours": "विस्तारित समय",
+      "extendedHoursDescription": "लचीला पढ़ने का समय",
+      "premiumAccess": "प्रीमियम एक्सेस",
+      "premiumAccessDescription": "विशेष संग्रह",
+      "communityEvents": "सामुदायिक कार्यक्रम",
+      "communityEventsDescription": "कार्यशालाएं और सेमिनार"
+    },
+    "deposit": {
+      "title": "सुरक्षा जमा विकल्प",
+      "basic": {
+        "amount": "500",
+        "books": "2",
+        "description": "सामयिक पाठकों के लिए बुनियादी सदस्यता"
+      },
+      "standard": {
+        "amount": "1000",
+        "books": "4",
+        "description": "नियमित पाठकों के लिए मानक सदस्यता"
+      },
+      "premium": {
+        "amount": "2000",
+        "books": "6",
+        "description": "उत्सुक पाठकों के लिए प्रीमियम सदस्यता"
+      },
+      "maxBooks": "अधिकतम पुस्तकें: {{count}}",
+      "choosePlan": "योजना चुनें"
+    },
+    "rules": {
+      "borrower": {
+        "title": "उधारकर्ता नियम और विनियम"
+      },
+      "library": {
+        "title": "पुस्तकालय नियम और विनियम"
+      }
+    },
+    "sidebar": {
+      "readyToJoin": "शामिल होने के लिए तैयार?",
+      "startJourney": "आज ही अपनी सदस्यता यात्रा शुरू करें",
+      "applyOnline": "ऑनलाइन आवेदन करें",
+      "downloadForm": "फॉर्म डाउनलोड करें",
+      "visitLibrary": "या ऑफलाइन पंजीकरण के लिए पुस्तकालय जाएं",
+      "contactInfo": "संपर्क जानकारी",
+      "libraryHours": "पुस्तकालय समय:",
+      "hours": "सुबह 9:00 - शाम 6:00",
+      "contact": "संपर्क:",
+      "phone": "+91-XXXX-XXXXXX",
+      "email": "ईमेल:",
+      "emailAddress": "library@prayagraj.gov.in",
+      "requiredDocuments": "आवश्यक दस्तावेज",
+      "identityProof": "पहचान प्रमाण (आधार, मतदाता पहचान पत्र, आदि)",
+      "addressProof": "पता प्रमाण",
+      "photos": "पासपोर्ट साइज फोटो (2)"
+    },
+    "cta": {
+      "title": "सदस्य बनने के लिए तैयार हैं?",
+      "description": "हमारे प्रतिष्ठित पुस्तकालय समुदाय में {{count}}+ पाठकों के साथ जुड़ें",
+      "applyMembership": "सदस्यता के लिए आवेदन करें",
+      "contactUs": "हमसे संपर्क करें"
+    },
+    "registration": {
+      "title": "सदस्यता पंजीकरण",
+      "description": "पुस्तकालय सदस्यता के लिए आवेदन करने के लिए नीचे दिया गया फॉर्म भरें",
+      "fullName": "पूरा नाम *",
+      "enterFullName": "अपना पूरा नाम दर्ज करें",
+      "email": "ईमेल *",
+      "enterEmail": "अपना ईमेल दर्ज करें",
+      "phone": "फोन नंबर *",
+      "enterPhone": "अपना फोन नंबर दर्ज करें",
+      "membershipType": "सदस्यता प्रकार *",
+      "deposit500": "₹500 जमा (2 पुस्तकें)",
+      "deposit1000": "₹1000 जमा (4 पुस्तकें)",
+      "deposit2000": "₹2000 जमा (6 पुस्तकें)",
+      "address": "पता *",
+      "enterAddress": "अपना पूरा पता दर्ज करें",
+      "cancel": "रद्द करें",
+      "submit": "आवेदन जमा करें",
+      "submitting": "जमा किया जा रहा है...",
+      "success": "पंजीकरण सफलतापूर्वक जमा किया गया! हम जल्द ही आपसे संपर्क करेंगे।"
+    }
   }
 }
